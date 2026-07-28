@@ -1,0 +1,26 @@
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Certificates and keys
+certs/
+*.pem
+*.crt
+*.key
+*.p12
+*.pfx
+
+# Data volumes (database, uploads, extensions)
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

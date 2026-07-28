@@ -1,0 +1,82 @@
+services:
+  database:
+    image: postgis/postgis:16-3.4-alpine
+    restart: unless-stopped
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER:?DB_USER is required}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      POSTGRES_DB: ${DB_DATABASE:?DB_DATABASE is required}
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=${DB_USER:?DB_USER is required}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  directus:
+    image: directus/directus:12.1.1
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8055:8055"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./data/uploads:/directus/uploads
+      - ./data/extensions:/directus/extensions
+      - ./certs/ca.crt:/ca.crt:ro
+    environment:
+      KEY: ${DIRECTUS_KEY:?DIRECTUS_KEY is required}
+      SECRET: ${DIRECTUS_SECRET:?DIRECTUS_SECRET is required}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8055}
+
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:?DB_DATABASE is required}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?ADMIN_EMAIL is required}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
+
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: host.docker.internal
+      EMAIL_SMTP_PORT: 1025
+      EMAIL_SMTP_SECURE: "false"
+      EMAIL_SMTP_IGNORE_TLS: "true"
+      EMAIL_FROM: ${ADMIN_EMAIL:-admin@example.com}
+
+      EXTENSIONS_AUTO_RELOAD: "true"
+
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+
+      ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_PORT: ${ELASTICSEARCH_PORT}
+      ELASTICSEARCH_CAPATH: ${ELASTICSEARCH_CAPATH}
+      
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER:?NEO4J_USER is required}/${NEO4J_PASSWORD:?NEO4J_PASSWORD is required}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.coll.*,apoc.map.*,apoc.text.*,apoc.meta.*,apoc.load.json,apoc.export.csv.*,apoc.import.csv
+    volumes:
+      - ./data/neo4j:/data
+      - ./data/neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD", "neo4j", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
