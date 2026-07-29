@@ -24,7 +24,7 @@ services:
         condition: service_healthy
     volumes:
       - ./data/uploads:/directus/uploads
-      - ./data/extensions:/directus/extensions
+      - ./apps/_directus/extensions:/directus/extensions
       - ./certs/ca.crt:/ca.crt:ro
     environment:
       KEY: ${DIRECTUS_KEY:?DIRECTUS_KEY is required}

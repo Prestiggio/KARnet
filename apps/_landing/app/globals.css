@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible, high-contrast keyboard focus ring everywhere (WCAG 2.4.7) */
+:focus-visible {
+  outline: 3px solid #cc9926;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The recurring "cross-tick" divider — echoes the negative-space cross
+   in the K†R monogram; used as this design's signature motif. */
+.cross-tick {
+  position: relative;
+  display: inline-block;
+  width: 1px;
+  height: 1.6rem;
+  background: currentColor;
+  opacity: 0.55;
+}
+.cross-tick::before {
+  content: "";
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: 0.6rem;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.bg-grain {
+  background-size: 18px 18px;
+}
