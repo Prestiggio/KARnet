@@ -13,6 +13,7 @@ certs/
 
 # Data volumes (database, uploads, extensions)
 data/
+documents/
 
 # OS files
 .DS_Store

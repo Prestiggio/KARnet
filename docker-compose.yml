@@ -38,9 +38,6 @@ services:
       DB_USER: ${DB_USER:?DB_USER is required}
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
 
-      ADMIN_EMAIL: ${ADMIN_EMAIL:?ADMIN_EMAIL is required}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
-
       EMAIL_TRANSPORT: smtp
       EMAIL_SMTP_HOST: host.docker.internal
       EMAIL_SMTP_PORT: 1025
@@ -50,10 +47,11 @@ services:
 
       EXTENSIONS_AUTO_RELOAD: "true"
 
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?ADMIN_EMAIL is required}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
       NEO4J_URI: ${NEO4J_URI}
       NEO4J_USER: ${NEO4J_USER}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-
       ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
@@ -62,6 +60,35 @@ services:
       
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  directus-dev:
+    image: node:22-alpine
+    profiles: ["dev"]
+    working_dir: /workspace
+    volumes:
+      - ./apps/_directus/extensions:/workspace
+      - ./data/fihirana.db:/workspace/search_song/src/fihirana.db
+      - ./certs/ca.crt:/ca.crt:ro
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?ADMIN_EMAIL is required}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOSTS}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_PORT: ${ELASTICSEARCH_PORT}
+      ELASTICSEARCH_CAPATH: ${ELASTICSEARCH_CAPATH}
+    depends_on:
+      - directus
+    stdin_open: true
+    tty: true
+    # Outils de build pour les dépendances natives (ex. puppeteer), installés
+    # une fois au démarrage du conteneur puisque l'image node:22-alpine ne
+    # les embarque pas par défaut.
+    command: sh -c "apk add --no-cache git python3 make g++ >/dev/null 2>&1; tail -f /dev/null"
 
   neo4j:
     image: neo4j:5-community
