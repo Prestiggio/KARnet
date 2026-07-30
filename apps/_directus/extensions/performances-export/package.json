@@ -1,0 +1,51 @@
+{
+	"name": "performances-export",
+	"description": "Export d'une collection de performances au format DOCX",
+	"icon": "extension",
+	"version": "2.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "endpoint",
+				"name": "performances-export-api",
+				"source": "src/endpoint/index.ts"
+			},
+			{
+				"type": "module",
+				"name": "performances-export",
+				"source": "src/module/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "18.0.1",
+		"@directus/sdk": "^23.0.0",
+		"typescript": "^7.0.2",
+		"vue": "^3.5.40",
+		"vue-router": "^4.4.0"
+	},
+	"dependencies": {
+		"docx": "^9.0.2"
+	}
+}

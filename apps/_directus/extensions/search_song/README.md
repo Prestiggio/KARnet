@@ -29,13 +29,15 @@ En Docker : monter le dossier dans `/directus/extensions/` et redémarrer le con
 ## Configuration serveur (env du conteneur Directus)
 
 ```env
-SONG_SEARCH_ES_URL=https://elasticsearch:9200
-SONG_SEARCH_ES_API_KEY=xxxx            # ou SONG_SEARCH_ES_USER + SONG_SEARCH_ES_PASSWORD
+ELASTICSEARCH_HOSTS=elasticsearch
+ELASTICSEARCH_PORT=9200
+ELASTICSEARCH_USERNAME=xxxx
+ELASTICSEARCH_PASSWORD=xxxx
 SONG_SEARCH_ES_ALLOWED_INDEXES=songs
 SONG_SEARCH_ES_FIELDS=title^3,artist^2,album
 
 # Si le cluster ES utilise une CA privée :
-NODE_EXTRA_CA_CERTS=/certs/ca.crt
+ELASTICSEARCH_CAPATH=/certs/ca.crt
 ```
 
 ## Configuration du champ

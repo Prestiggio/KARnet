@@ -96,7 +96,7 @@ function handleNoteOff(note: number): void {
 	if (heldNotes.size === 0 && peakNotes.size > 0) {
 		const chord = detectChord([...peakNotes], props.notation);
 		peakNotes.clear();
-		if (chord) insertAtCaret(`[${chord.replace(/M$/, '')}]`);
+		if (chord) insertAtCaret(`[${chord.replace(/M$/, '').replace(/^A\#/, 'Bb').replace(/^D\#/, 'Eb').replace(/^G\#/, 'Ab')}]`);
 	}
 }
 

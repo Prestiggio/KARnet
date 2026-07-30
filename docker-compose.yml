@@ -67,7 +67,6 @@ services:
     working_dir: /workspace
     volumes:
       - ./apps/_directus/extensions:/workspace
-      - ./data/fihirana.db:/workspace/search_song/src/fihirana.db
       - ./certs/ca.crt:/ca.crt:ro
     environment:
       DIRECTUS_URL: http://directus:8055

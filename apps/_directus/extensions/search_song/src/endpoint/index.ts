@@ -1,4 +1,5 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
+import { esRequest } from '../lib/esClient';
 
 /**
  * Proxy sécurisé vers Elasticsearch.
@@ -7,18 +8,18 @@ import { defineEndpoint } from '@directus/extensions-sdk';
  * un serveur externe (protection CSRF), et cela évite d'exposer les
  * credentials ES au navigateur.
  *
- * Variables d'environnement à définir sur le conteneur Directus :
- *   SONG_SEARCH_ES_URL=https://elasticsearch:9200
- *   SONG_SEARCH_ES_API_KEY=xxxx                (ou SONG_SEARCH_ES_USER / SONG_SEARCH_ES_PASSWORD)
+ * Variables d'environnement à définir sur le conteneur Directus (mêmes que
+ * celles utilisées par katolika-api, voir src/bible/ESseeder.ts) :
+ *   ELASTICSEARCH_HOSTS=elasticsearch
+ *   ELASTICSEARCH_PORT=9200
+ *   ELASTICSEARCH_USERNAME / ELASTICSEARCH_PASSWORD
+ *   ELASTICSEARCH_CAPATH=/certs/ca.crt          (si CA privée auto-signée)
  *   SONG_SEARCH_ES_ALLOWED_INDEXES=songs,tracks
  *   SONG_SEARCH_ES_FIELDS=title^3,artist^2,album
- *
- * Si votre cluster ES utilise une CA privée (auto-signée), montez le
- * certificat et ajoutez : NODE_EXTRA_CA_CERTS=/certs/ca.crt
  */
 export default defineEndpoint({
 	id: 'song-search-api',
-	handler: (router, { env, logger }) => {
+	handler: (router, { services, database, getSchema, env, logger }) => {
 		router.get('/', async (req, res) => {
 			// Réservé aux utilisateurs connectés au Data Studio
 			const accountability = (req as any).accountability;
@@ -31,9 +32,8 @@ export default defineEndpoint({
 				return res.json({ results: [] });
 			}
 
-			const esUrl: string | undefined = env.SONG_SEARCH_ES_URL;
-			if (!esUrl) {
-				logger.error('SONG_SEARCH_ES_URL is not defined');
+			if (!env.ELASTICSEARCH_HOSTS) {
+				logger.error('ELASTICSEARCH_HOSTS is not defined');
 				return res.status(500).json({ error: 'Elasticsearch is not configured' });
 			}
 
@@ -47,51 +47,67 @@ export default defineEndpoint({
 				return res.status(400).json({ error: `Index "${index}" not allowed` });
 			}
 
-			const fields = String(env.SONG_SEARCH_ES_FIELDS ?? 'title^3,artist^2,album')
-				.split(',')
-				.map((s: string) => s.trim())
-				.filter(Boolean);
-
-			const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-			if (env.SONG_SEARCH_ES_API_KEY) {
-				headers.Authorization = `ApiKey ${env.SONG_SEARCH_ES_API_KEY}`;
-			} else if (env.SONG_SEARCH_ES_USER && env.SONG_SEARCH_ES_PASSWORD) {
-				const basic = Buffer.from(
-					`${env.SONG_SEARCH_ES_USER}:${env.SONG_SEARCH_ES_PASSWORD}`,
-				).toString('base64');
-				headers.Authorization = `Basic ${basic}`;
-			}
-
 			try {
-				const esRes = await fetch(`${esUrl.replace(/\/$/, '')}/${encodeURIComponent(index)}/_search`, {
-					method: 'POST',
-					headers,
-					body: JSON.stringify({
-						size: 10,
-						query: {
-							multi_match: {
-								query: q,
-								fields,
-								type: 'best_fields',
-								fuzziness: 'AUTO',
-								operator: 'and',
-							},
-						},
-					}),
+				const esRes = await esRequest(env, 'POST', `/${encodeURIComponent(index)}/_search`,
+				{
+					query: {
+						query_string: {
+							query: q!,
+							fields: ['title^2', 'content'],
+							fuzziness: 'AUTO'
+						}
+					},
+					sort: [
+						{
+							_score: {
+								order: 'desc'
+							}
+						}
+					],
+					size: 100
 				});
 
-				if (!esRes.ok) {
-					const text = await esRes.text();
-					logger.error(`Elasticsearch error ${esRes.status}: ${text}`);
+				if (esRes.status < 200 || esRes.status >= 300) {
+					logger.error(`Elasticsearch error ${esRes.status}: ${JSON.stringify(esRes.json)}`);
 					return res.status(502).json({ error: 'Elasticsearch query failed' });
 				}
 
-				const data: any = await esRes.json();
-				const results = (data?.hits?.hits ?? []).map((hit: any) => ({
-					id: hit._id,
-					_score: hit._score,
-					...hit._source,
-				}));
+				const hits: any[] = esRes.json?.hits?.hits ?? [];
+				if (hits.length === 0) {
+					return res.json({ results: [] });
+				}
+
+				// Les documents ES ne sont qu'un index de recherche : on retourne les
+				// chants Directus correspondants (infos.es_id === _id ES), avec tous
+				// leurs champs à jour, pour le pré-remplissage du formulaire.
+				const scoreByEsId = new Map<string, number>(hits.map((hit) => [String(hit._id), hit._score]));
+
+				// Le filtrage par sous-chemin JSON (infos.es_id) passe par le moteur
+				// de permissions comme un chemin relationnel et échoue pour les rôles
+				// non-admin. On résout donc les ids Directus via une requête knex brute
+				// (non soumise aux permissions), puis on relit les chants via
+				// l'ItemsService (qui applique bien les permissions de l'utilisateur).
+				const matchingIds: string[] = await database('songs')
+					.whereRaw("infos->>'es_id' = ANY(?)", [[...scoreByEsId.keys()]])
+					.pluck('id');
+
+				if (matchingIds.length === 0) {
+					return res.json({ results: [] });
+				}
+
+				const { ItemsService } = services;
+				const schema = await getSchema();
+				const songsService = new ItemsService('songs', { schema, accountability, knex: database });
+
+				const songs = await songsService.readByQuery({
+					fields: ['*'],
+					filter: { id: { _in: matchingIds } },
+					limit: -1,
+				});
+
+				const results = songs
+					.map((song: any) => ({ ...song, _score: scoreByEsId.get(String(song.infos?.es_id)) }))
+					.sort((a: any, b: any) => (b._score ?? 0) - (a._score ?? 0));
 
 				return res.json({ results });
 			} catch (err: any) {
