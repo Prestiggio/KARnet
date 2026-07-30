@@ -42,8 +42,6 @@ function textToParagraphs(text: string, options: { monospace?: boolean } = {}): 
 function buildPerformanceSection(performance: any, isFirst: boolean): Paragraph[] {
 	const paragraphs: Paragraph[] = [];
 
-	console.log('dsdjsdjfksdfk', performance.song?.infos)
-
 	paragraphs.push(new Paragraph({ text: performance.song?.infos?.es_id, heading: HeadingLevel.HEADING_1, spacing: { after: 100 }, pageBreakBefore: !isFirst }));
 
 	if (performance.song?.title) {
