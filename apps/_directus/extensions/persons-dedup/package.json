@@ -25,9 +25,19 @@
 				"source": "src/hook/index.ts"
 			},
 			{
+				"type": "hook",
+				"name": "saints-dedup-sync",
+				"source": "src/hook/saint.ts"
+			},
+			{
 				"type": "endpoint",
 				"name": "persons-dedup-api",
 				"source": "src/endpoint/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "saints-dedup-api",
+				"source": "src/endpoint/saint.ts"
 			},
 			{
 				"type": "module",
@@ -35,9 +45,19 @@
 				"source": "src/module/index.ts"
 			},
 			{
+				"type": "module",
+				"name": "saints-dedup",
+				"source": "src/module/saint.ts"
+			},
+			{
 				"type": "interface",
 				"name": "persons-dedup-prefill-input",
 				"source": "src/interface/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "saints-dedup-prefill-input",
+				"source": "src/interface/saint.ts"
 			}
 		],
 		"host": "^10.10.0"
