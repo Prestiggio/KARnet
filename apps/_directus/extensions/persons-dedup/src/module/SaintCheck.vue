@@ -1,5 +1,9 @@
 <template>
 	<private-view title="Nouveau saint">
+		<template #navigation>
+			<ReactSlot :component="SongSearch" :component-props="songSearchProps" />
+		</template>
+
 		<div class="saints-dedup">
 			<p class="intro">
 				Vérifiez si le saint existe avant de créer une nouvelle fiche.
@@ -42,6 +46,8 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '@directus/extensions-sdk';
+import ReactSlot from './ReactSlot.vue';
+import SongSearch from './Navigation';
 
 const api = useApi();
 const router = useRouter();
@@ -90,6 +96,16 @@ function createNew() {
 		query: { lastname: lastname.value.trim(), firstname: firstname.value.trim() },
 	});
 }
+
+const songSearchProps = computed(() => ({
+	value: null,
+	disabled: false,
+	placeholder: 'Rechercher un saint…',
+	valuePath: 'title',
+	search,
+	router,
+	onInput: () => {},
+}));
 </script>
 
 <style scoped>

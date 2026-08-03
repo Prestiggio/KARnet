@@ -2,20 +2,39 @@
 	"name": "organization",
 	"description": "Please enter a description for your extension",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-hook"
+		"directus-extension-bundle"
 	],
 	"type": "module",
 	"files": [
 		"dist"
 	],
 	"directus:extension": {
-		"type": "hook",
-		"path": "dist/index.js",
-		"source": "src/index.ts",
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "hook",
+				"name": "organization-sync",
+				"source": "src/hook/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "organigram",
+				"source": "src/endpoint/index.ts"
+			},
+			{
+				"type": "module",
+				"name": "organization-module",
+				"source": "src/module/index.ts"
+			}
+		],
 		"host": "^10.10.0"
 	},
 	"scripts": {
@@ -26,12 +45,28 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "18.0.1",
+		"@rollup/plugin-image": "^3.0.3",
+		"@tailwindcss/postcss": "^4.3.3",
 		"@types/node": "^26.1.1",
-		"typescript": "^7.0.2"
+		"autoprefixer": "^10.5.4",
+		"postcss": "^8.5.25",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^7.0.2",
+		"vue": "^3.5.40",
+		"vue-router": "^4.4.0"
 	},
 	"dependencies": {
 		"@directus/sdk": "^23.0.0",
+		"@heroicons/react": "^2.2.0",
+		"html-to-image": "^1.11.13",
+		"lodash": "^4.18.1",
+		"moment": "^2.30.1",
 		"neo4j-driver": "^6.2.0",
-		"puppeteer": "^25.3.0"
+		"puppeteer": "^25.3.0",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"react-dropzone": "^19.2.0",
+		"reactflow": "^11.11.4",
+		"yaml": "^2.9.0"
 	}
 }

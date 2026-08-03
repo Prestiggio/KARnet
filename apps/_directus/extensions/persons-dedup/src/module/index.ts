@@ -1,5 +1,6 @@
 import { defineModule } from '@directus/extensions-sdk';
 import PersonCheck from './PersonCheck.vue';
+import SaintCheck from './SaintCheck.vue';
 
 export default defineModule({
 	id: 'persons-dedup',
@@ -10,5 +11,9 @@ export default defineModule({
 			path: '',
 			component: PersonCheck,
 		},
+		{
+			path: 'saints',
+			component: SaintCheck
+		}
 	],
 });

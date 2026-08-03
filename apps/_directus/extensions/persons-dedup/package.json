@@ -45,11 +45,6 @@
 				"source": "src/module/index.ts"
 			},
 			{
-				"type": "module",
-				"name": "saints-dedup",
-				"source": "src/module/saint.ts"
-			},
-			{
 				"type": "interface",
 				"name": "persons-dedup-prefill-input",
 				"source": "src/interface/index.ts"
@@ -71,8 +66,17 @@
 	"devDependencies": {
 		"@directus/extensions-sdk": "18.0.1",
 		"@directus/sdk": "^23.0.0",
+		"@tailwindcss/postcss": "^4.3.3",
+		"autoprefixer": "^10.5.4",
+		"postcss": "^8.5.25",
+		"tailwindcss": "^4.3.3",
 		"typescript": "^7.0.2",
 		"vue": "^3.5.40",
 		"vue-router": "^4.4.0"
+	},
+	"dependencies": {
+		"@heroicons/react": "^2.2.0",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8"
 	}
 }

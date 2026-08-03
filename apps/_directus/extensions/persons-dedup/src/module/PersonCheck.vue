@@ -1,5 +1,9 @@
 <template>
 	<private-view title="Nouvelle personne">
+		<template #navigation>
+			<ReactSlot :component="SongSearch" :component-props="songSearchProps" />
+		</template>
+
 		<div class="persons-dedup">
 			<p class="intro">
 				Vérifiez si la personne est déjà fichée avant de créer une nouvelle fiche.
@@ -37,10 +41,12 @@
 	</private-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '@directus/extensions-sdk';
+import ReactSlot from './ReactSlot.vue';
+import SongSearch from './Navigation';
 
 const api = useApi();
 const router = useRouter();
@@ -50,6 +56,28 @@ const firstname = ref('');
 const results = ref([]);
 const loading = ref(false);
 const searched = ref(false);
+
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		esIndex?: string;
+		valuePath?: string;
+		mapping?: Record<string, string> | string | null;
+		placeholder?: string;
+	}>(),
+	{
+		disabled: false,
+		esIndex: 'songs',
+		valuePath: 'title',
+		mapping: null,
+		placeholder: 'Rechercher une chanson…',
+	},
+);
+const emit = defineEmits<{
+	(e: 'input', value: string | null): void;
+	(e: 'setFieldValue', payload: { field: string; value: unknown }): void;
+}>();
 
 const canSearch = computed(() => lastname.value.trim().length > 0);
 
@@ -89,6 +117,17 @@ function createNew() {
 		query: { lastname: lastname.value.trim(), firstname: firstname.value.trim() },
 	});
 }
+
+const songSearchProps = computed(() => ({
+	value: props.value,
+	disabled: props.disabled,
+	placeholder: props.placeholder,
+	valuePath: props.valuePath,
+	search,
+	router,
+	onInput: (v: string | null) => emit('input', v),
+}));
+
 </script>
 
 <style scoped>

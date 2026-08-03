@@ -4,7 +4,7 @@ import PerformancesExport from './PerformancesExport.vue';
 export default defineModule({
 	id: 'performances-export',
 	name: 'Export Performances',
-	icon: 'description',
+	icon: 'music_video',
 	routes: [
 		{
 			path: '',
