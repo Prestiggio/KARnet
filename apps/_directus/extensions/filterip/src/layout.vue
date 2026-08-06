@@ -15,6 +15,9 @@
               @change="toggleSelectAll"
             />
           </th>
+          <th>
+            <v-icon name="account_tree" />
+          </th>
           <th v-for="field in displayFields" :key="field" class="sortable" @click="toggleSort(field)">
             {{ field }}
             <span v-if="sortField === field" class="sort-indicator">{{ sortDesc ? '▼' : '▲' }}</span>
@@ -26,7 +29,6 @@
           v-for="item in items"
           :key="item[primaryKeyFieldName]"
           class="selectable"
-          @click="onRowClick(item)"
         >
           <td v-if="showSelect !== 'none'" class="select-col" @click.stop>
             <input
@@ -35,7 +37,10 @@
               @change="toggleSelection(item)"
             />
           </td>
-          <td v-for="field in displayFields" :key="field">{{ formatValue(item[field]) }}</td>
+          <td @click="onOrganigramClick(item)">
+            <v-icon name="account_tree" />
+          </td>
+          <td @click="onRowClick(item)" v-for="field in displayFields" :key="field">{{ formatValue(item[field]) }}</td>
         </tr>
       </tbody>
     </table>
@@ -128,6 +133,11 @@ export default {
       }
       const pk = item[primaryKeyFieldName.value];
       router.push(`/content/${props.collection}/${encodeURIComponent(pk)}`);
+    }
+
+    function onOrganigramClick(item) {
+      const pk = item[primaryKeyFieldName.value];
+      router.push(`/organization/${encodeURIComponent(pk)}`);
     }
 
     function toggleSelectAll() {
@@ -232,6 +242,7 @@ export default {
       primaryKeyFieldName,
       isSelected,
       toggleSelection,
+      onOrganigramClick,
       onRowClick,
       toggleSelectAll,
       allSelected,

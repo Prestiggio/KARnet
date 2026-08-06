@@ -5,10 +5,12 @@ export default defineModule({
 	id: 'organization',
 	name: 'Organisations',
 	icon: 'account_tree',
+	hidden: true,
 	routes: [
 		{
-			path: '',
+			path: ':primaryKey',
 			component: Organization,
-		},
+			props: true
+		}
 	],
 });

@@ -106,7 +106,6 @@ export default defineHook(({ action }, { env, logger }) => {
 				const parent = parents[0]
 				const organizationLevel = organization ? assertSafeLabel(organization.level, logger) : null;
 				const parentLevel = parent ? assertSafeLabel(parent.level, logger) : null;
-
 				if (organizationLevel && parentLevel) {
 					const session = driver.session();
 					try {

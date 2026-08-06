@@ -19,7 +19,7 @@ function __(input: string, replaces: any = {}) {
 
 // Now you have your nodes and edges
 
-const OrganizationTree = ({ tree, positioned }) => {
+const OrganizationTree = ({ organizationId, tree, positioned, router, api }) => {
   let nodes: Node[] = [];
 
   const edges: Edge[] = [];
@@ -27,12 +27,14 @@ const OrganizationTree = ({ tree, positioned }) => {
   function addNode(node: any, parentId: string | null, level?: number,) {
     if (!('id' in node)) return; // Skip if no id (some entries are incomplete)
 
-    const type = 'kto';
+    const type = node.type ?? 'kto';
+
     nodes.push({
       id: node.id,
       type,
-      data: { ...node },
-      position: { x: 0, y: 0 } // { x: 200 * level, y: nodes.length * 80 } // Adjust as needed
+      draggable: node.draggable ?? true,
+      data: { ...node, router },
+      position: node.position ?? { x: 4000, y: 0 } // { x: 200 * level, y: nodes.length * 80 } // Adjust as needed
     });
 
     return node.id;
@@ -62,7 +64,7 @@ const OrganizationTree = ({ tree, positioned }) => {
     }
   }
 
-  processStructure(tree);
+  processStructure(tree.nodes);
   
   nodes = nodes.reverse()
 
@@ -97,8 +99,14 @@ const OrganizationTree = ({ tree, positioned }) => {
     }
   }
 
+  if(tree.edges) {
+    for(const edge of tree.edges) {
+      repositioned.edges.push(edge)
+    }
+  }
+
   return (
-    <Letree Pnodes={nodes} Pedges={edges} positioned={repositioned} isAdmin={isAdmin === true} />
+    <Letree key={nodes.length} api={api} organization={{id:organizationId}} Pnodes={nodes} Pedges={edges} positioned={repositioned} isAdmin={isAdmin === true} />
   );
 };
 
