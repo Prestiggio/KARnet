@@ -337,7 +337,25 @@ export default defineEndpoint({
 				return res.status(401).json({ error: 'Unauthorized' });
 			}
 
+			const REFERENCE_ORGANIZATION_ID = req.params.primaryKey;// '76ad4aa7-c1fe-459c-9b68-e381bb1f0dba';
+
+			const { ItemsService } = services;
+			const schema = await getSchema();
+			const organizationService = new ItemsService('organizations', { schema, accountability, knex: database });
+
+			const organization = await organizationService.readOne(REFERENCE_ORGANIZATION_ID, {
+				fields: ['guide', 'organigram']
+			})
+
+			if(organization.organigram) {
+				return res.status(200).json({
+					...organization.organigram,
+					id: REFERENCE_ORGANIZATION_ID
+				})
+			}
+
 			return res.status(200).json({
+				id: 'init',
 				nodes: [],
 				edges: []
 			})

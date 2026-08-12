@@ -1,0 +1,61 @@
+{
+	"name": "report",
+	"description": "Please enter a description for your extension",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "module",
+				"name": "report-module",
+				"source": "src/module/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "report",
+				"source": "src/endpoint/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "18.0.2",
+		"@tailwindcss/postcss": "^4.3.3",
+		"@types/node": "^26.1.1",
+		"autoprefixer": "^10.5.4",
+		"postcss": "^8.5.25",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^7.0.2",
+		"vue": "^3.5.41",
+		"vue-router": "^4.4.0"
+	},
+	"dependencies": {
+		"@directus/sdk": "^23.0.0",
+		"@heroicons/react": "^2.2.0",
+		"lodash": "^4.18.1",
+		"moment": "^2.30.1",
+		"neo4j-driver": "^6.2.0",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8"
+	}
+}

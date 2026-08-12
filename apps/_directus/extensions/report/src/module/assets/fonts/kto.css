@@ -1,0 +1,39 @@
+@font-face {
+    font-family: "kto";
+    src: url("./kto.eot?11e811ba8e2cadabda3298eb80832980#iefix") format("embedded-opentype"),
+url("./kto.woff2?11e811ba8e2cadabda3298eb80832980") format("woff2"),
+url("./kto.woff?11e811ba8e2cadabda3298eb80832980") format("woff");
+}
+
+i[class^="kto-"]:before, i[class*=" kto-"]:before {
+    font-family: kto !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.kto-blank:before {
+    content: "\0xA0";
+}
+.kto-school:before {
+    content: "\f101";
+}
+.kto-sakramenta:before {
+    content: "\f102";
+}
+.kto-money:before {
+    content: "\f103";
+}
+.kto-group:before {
+    content: "\f104";
+}
+.kto-eglizy:before {
+    content: "\f105";
+}
+.kto-charity:before {
+    content: "\f106";
+}

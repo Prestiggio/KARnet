@@ -18,6 +18,9 @@
           <th>
             <v-icon name="account_tree" />
           </th>
+          <th>
+            <v-icon name="analytics" />
+          </th>
           <th v-for="field in displayFields" :key="field" class="sortable" @click="toggleSort(field)">
             {{ field }}
             <span v-if="sortField === field" class="sort-indicator">{{ sortDesc ? '▼' : '▲' }}</span>
@@ -39,6 +42,9 @@
           </td>
           <td @click="onOrganigramClick(item)">
             <v-icon name="account_tree" />
+          </td>
+          <td @click="onReportClick(item)">
+            <v-icon name="analytics" />
           </td>
           <td @click="onRowClick(item)" v-for="field in displayFields" :key="field">{{ formatValue(item[field]) }}</td>
         </tr>
@@ -138,6 +144,11 @@ export default {
     function onOrganigramClick(item) {
       const pk = item[primaryKeyFieldName.value];
       router.push(`/organization/${encodeURIComponent(pk)}`);
+    }
+
+    function onReportClick(item) {
+      const pk = item[primaryKeyFieldName.value];
+      router.push(`/report/${encodeURIComponent(pk)}`);
     }
 
     function toggleSelectAll() {
@@ -243,6 +254,7 @@ export default {
       isSelected,
       toggleSelection,
       onOrganigramClick,
+      onReportClick,
       onRowClick,
       toggleSelectAll,
       allSelected,

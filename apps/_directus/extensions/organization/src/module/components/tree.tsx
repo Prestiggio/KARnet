@@ -34,7 +34,7 @@ const OrganizationTree = ({ organizationId, tree, positioned, router, api }) => 
       type,
       draggable: node.draggable ?? true,
       data: { ...node, router },
-      position: node.position ?? { x: 4000, y: 0 } // { x: 200 * level, y: nodes.length * 80 } // Adjust as needed
+      position: node.position ?? { x: 0, y: 0 } // { x: 200 * level, y: nodes.length * 80 } // Adjust as needed
     });
 
     return node.id;
@@ -76,7 +76,10 @@ const OrganizationTree = ({ organizationId, tree, positioned, router, api }) => 
     edges: []
   }
 
-  repositioned = positioned
+  repositioned = {
+    ...positioned,
+    id: 'nodeinit'
+  }
 
   for (let rnode of repositioned.nodes) {
     let upd = nodes.find(it => it.id === rnode.id)
@@ -106,7 +109,7 @@ const OrganizationTree = ({ organizationId, tree, positioned, router, api }) => 
   }
 
   return (
-    <Letree key={nodes.length} api={api} organization={{id:organizationId}} Pnodes={nodes} Pedges={edges} positioned={repositioned} isAdmin={isAdmin === true} />
+    <Letree key={positioned.id} api={api} organization={{id:organizationId}} Pnodes={nodes} Pedges={edges} positioned={positioned} isAdmin={isAdmin === true} />
   );
 };
 

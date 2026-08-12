@@ -1,0 +1,9 @@
+{
+    "inputDir": "./medias/fonts",
+    "outputDir": "./src/assets/fonts",
+    "name": "kto",
+    "prefix": "kto",
+    "codepoints": {
+        "blank": "0xA0"
+    }
+}

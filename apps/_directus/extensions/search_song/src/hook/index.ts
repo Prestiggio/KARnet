@@ -150,7 +150,6 @@ export default defineHook(({ filter, action }, { services, database, getSchema, 
 	async function syncSong(id: string, doc: Record<string, unknown>, knownInfos: Record<string, any> | undefined) {
 		const infos = knownInfos ?? (await readInfos(id));
 		const esId = infos?.es_id;
-
 		if (esId) {
 			await updateEsDoc(String(esId), doc);
 			return;
@@ -172,7 +171,6 @@ export default defineHook(({ filter, action }, { services, database, getSchema, 
 	action('songs.items.update', async ({ payload, key, keys }: any) => {
 		const doc = partialDoc(payload ?? {});
 		if (Object.keys(doc).length === 0) return;
-
 		const knownInfos = 'infos' in (payload ?? {}) ? payload.infos ?? {} : undefined;
 		for (const id of toIds(key, keys)) {
 			await syncSong(id, doc, knownInfos);
