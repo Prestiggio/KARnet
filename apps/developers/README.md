@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+K@Rnet - Référence de l'API pour les développeurs
 
-## Getting Started
+Application [Next.js](https://nextjs.org) qui sert la documentation de l'API K@Rnet via [Scalar](https://github.com/scalar/scalar) ([app/reference/route.js](app/reference/route.js)), à partir du fichier [public/openapi.json](public/openapi.json).
 
-First, run the development server:
+## Mode développement
+
+### En local (Node)
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le site est disponible sur [http://localhost:3000](http://localhost:3000) (rechargement automatique à chaque modification, ex. `app/page.tsx`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Via Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker compose up
+```
 
-## Learn More
+Lance le service `dev` défini dans [docker-compose.yml](docker-compose.yml), avec bind-mount du code source (hot-reload). Le site est disponible sur [http://localhost:3001](http://localhost:3001) (port publié `3001` → conteneur `3000`, pour ne pas entrer en conflit avec `apps/_landing` qui utilise déjà le `3000`).
 
-To learn more about Next.js, take a look at the following resources:
+## Mode production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+L'app utilise `output: "standalone"` ([next.config.ts](next.config.ts)), donc `next start` ne fonctionne pas directement — il faut lancer le serveur standalone généré par le build.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### En local / sur un serveur (Node + PM2)
 
-## Deploy on Vercel
+```bash
+npm install
+npm run build      # génère .next/standalone puis copie public/ et .next/static (script postbuild)
+npm run start       # équivaut à: node .next/standalone/server.js
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Le port par défaut est `3000` ; surchargeable via la variable d'environnement `PORT` :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+PORT=3002 npm run start
+```
+
+Pour un déploiement supervisé avec [PM2](https://pm2.keymetrics.io/), utiliser [ecosystem.config.js](ecosystem.config.js) (port `3002` par défaut, modifiable dans le fichier) :
+
+```bash
+npm run build
+pm2 start ecosystem.config.js
+pm2 logs karnet-developers
+pm2 restart karnet-developers
+```
+
+### Via Docker
+
+```bash
+docker build -t karnet-developers --target runner .
+docker run -p 3000:3000 -e PORT=3000 karnet-developers
+```
+
+Le [Dockerfile](Dockerfile) construit une image multi-stage (`deps` → `builder` → `runner`) et exécute le serveur standalone en tant qu'utilisateur non-root (`nextjs`).
+
+## Ressources
+
+- [Documentation Next.js](https://nextjs.org/docs)
+- [Documentation Scalar API Reference](https://github.com/scalar/scalar/tree/main/packages/nextjs-api-reference)
