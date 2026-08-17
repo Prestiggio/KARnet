@@ -5,10 +5,10 @@ const config = {
   url: '/openapi.json',
   favicon: '/logo.png',
   metaData: {
-    title: 'K@Rnet Developer API Reference',
-    description: 'Available endpoints for interacting with Data Centers of the Roman Catholic Church in Madagascar',
-    ogDescription: 'Available endpoints for interacting with Data Centers of the Roman Catholic Church in Madagascar',
-    ogTitle: 'K@Rnet Developer API Reference',
+    title: 'Référence de l\'API K@Rnet pour les développeurs',
+    description: 'Points de terminaison disponibles pour interagir avec les centres de données K@Rnet de l\'Église catholique romaine à Madagascar',
+    ogDescription: 'Points de terminaison disponibles pour interagir avec les centres de données K@Rnet de l\'Église catholique romaine à Madagascar',
+    ogTitle: 'Référence de l\'API K@Rnet pour les développeurs',
     ogImage: 'https://developer.katolika.net/api.webp',
     author: 'Prestiggio',
     date: '2026-08-17'
