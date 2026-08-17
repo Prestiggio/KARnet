@@ -6,10 +6,10 @@ const config = {
   favicon: '/logo.png',
   metaData: {
     title: 'K@Rnet Developer API Reference',
-    description: 'Available endpoints for interacting with Roman Catholic Church Network in Madagascar',
-    ogDescription: 'Available endpoints for interacting with Roman Catholic Church Network in Madagascar',
+    description: 'Available endpoints for interacting with Data Centers of the Roman Catholic Church in Madagascar',
+    ogDescription: 'Available endpoints for interacting with Data Centers of the Roman Catholic Church in Madagascar',
     ogTitle: 'K@Rnet Developer API Reference',
-    ogImage: 'https://developer.katolika.net/api.jpeg',
+    ogImage: 'https://developer.katolika.net/api.webp',
     author: 'Prestiggio',
     date: '2026-08-17'
   }
