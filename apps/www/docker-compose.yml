@@ -1,0 +1,22 @@
+services:
+  www:
+    image: node:22-alpine
+    container_name: katolika-main-website
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - www_node_modules:/app/node_modules
+      - www_next_cache:/app/.next
+    environment:
+      NODE_ENV: development
+      WATCHPACK_POLLING: "true"
+    command: sh -c "npm install && npm run dev"
+    stdin_open: true
+    tty: true
+
+
+volumes:
+  www_node_modules:
+  www_next_cache:

@@ -1,0 +1,10 @@
+{
+  "name": "remark-mdx-toc-default",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "dependencies": {
+    "remark-mdx-toc": "*"
+  }
+}
