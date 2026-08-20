@@ -7,6 +7,7 @@ import { hasLocale } from "next-intl";
 import { NextIntlClientProvider } from 'next-intl';
 import { routing } from "@/i18n/routing";
 import { getLocale, getTranslations } from "next-intl/server";
+import { LG_COUNTRIES } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,8 +65,8 @@ export async function generateMetadata() {
       url: `/${locale}`,
       type: "website",
       siteName: __('Katolika, Eglizy en ligne'),
-      locale,
-      alternateLocale: routing.locales.filter((l) => l !== locale),
+      locale: LG_COUNTRIES[locale as keyof typeof LG_COUNTRIES],
+      alternateLocale: routing.locales.filter((l) => l !== locale).map((l) => LG_COUNTRIES[l as keyof typeof LG_COUNTRIES]),
     },
   }
 }

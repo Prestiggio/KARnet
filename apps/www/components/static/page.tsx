@@ -4,6 +4,7 @@ import { routing } from "@/i18n/routing"
 import { getPathname } from "@/i18n/navigation"
 import Image from "next/image"
 import React from "react"
+import { LG_COUNTRIES } from "@/lib/utils"
 
 function CustomH1({ children, ...props }: React.ComponentPropsWithoutRef<"h1">) {
   return <h1 className="text-red-600" {...props}>{children}</h1>
@@ -63,8 +64,8 @@ export default function StaticPage(slug: string) {
                 url: languages[locale],
                 type: "website",
                 siteName: __("Katolika, Eglizy en ligne"),
-                locale,
-                alternateLocale: routing.locales.filter((l) => l !== locale)
+                locale: LG_COUNTRIES[locale as keyof typeof LG_COUNTRIES],
+                alternateLocale: routing.locales.filter((l) => l !== locale).map((l) => LG_COUNTRIES[l as keyof typeof LG_COUNTRIES]),
             }
         }
     }
