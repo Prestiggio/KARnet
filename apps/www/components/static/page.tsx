@@ -89,6 +89,7 @@ export default function StaticPage(slug: string) {
     return {
         Page,
         generateMetadata,
-        generateStaticParams
+        generateStaticParams,
+        revalidate: 3600
     }
 }
