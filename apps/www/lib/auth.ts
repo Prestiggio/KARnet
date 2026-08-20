@@ -4,7 +4,11 @@ import path from "path";
 import { Pool } from "pg";
 import { importPKCS8, SignJWT } from "jose";
 
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+// Combine the app-local .env with the monorepo root .env (shared DB/service
+// credentials). dotenv.config() never overrides an already-set var, so the
+// local file loaded first takes precedence over the root one.
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 // Generate the client secret JWT required for 'Sign in with Apple'.
 async function generateAppleClientSecret(clientId: string, teamId: string, keyId: string, privateKey: string) {

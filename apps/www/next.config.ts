@@ -5,6 +5,10 @@ import createMDX from '@next/mdx'
 import createNextIntlPlugin from 'next-intl/plugin';
 import { routing } from './i18n/routing'
 
+// Combine the app-local .env with the monorepo root .env (shared DB/service
+// credentials). dotenv.config() never overrides an already-set var, so the
+// local file loaded first takes precedence over the root one.
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const nextConfig: NextConfig = {
