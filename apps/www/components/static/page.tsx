@@ -53,7 +53,9 @@ export default function StaticPage(slug: string) {
         return {
             ...resolvedMatter,
             title: `Katolika - ${resolvedMatter.title}`,
-            alternates: { languages }
+            alternates: { languages },
+            author: resolvedMatter.author,
+            date: resolvedMatter.date
         }
     }
 
