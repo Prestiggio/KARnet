@@ -16,10 +16,6 @@ const overrideComponents = {
   h2: CustomH2
 }
 
-export async function generateStaticParams() {
-    return [{ locale: 'fr' }, { locale: 'mg' }, { locale: 'en' }]
-}
-
 // Frontmatter values can embed `{props.data.KEY}` placeholders (e.g. legal
 // boilerplate). Unlike the mdx body, frontmatter is plain YAML text and is
 // never evaluated as JSX, so placeholders are resolved manually here against

@@ -8,6 +8,7 @@ export const routing = defineRouting({
   defaultLocale: 'mg',
 
   pathnames: {
+    '/': '/',
     '/legal-notice': {
       mg: '/fenitra-ara-dalana',
       fr: '/mentions-legales'

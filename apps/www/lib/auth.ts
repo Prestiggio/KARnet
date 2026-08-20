@@ -7,7 +7,7 @@ import { importPKCS8, SignJWT } from "jose";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 // Generate the client secret JWT required for 'Sign in with Apple'.
-async function generateAppleClientSecret(clientId, teamId, keyId, privateKey) {
+async function generateAppleClientSecret(clientId: string, teamId: string, keyId: string, privateKey: string) {
     const key = await importPKCS8(privateKey, "ES256");
     const now = Math.floor(Date.now() / 1000);
     return new SignJWT({})

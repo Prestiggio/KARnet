@@ -8,13 +8,15 @@ const navigation = {
     { name: "Fenitra ara-dalàna", href: '/legal-notice' },
     { name: "Fepetra samihafa", href: '/terms' },
     { name: "Zo tsiambarantelo", href: '/privacy' },
-    { name: "Sehatra rindrambaiko", href: 'https://developer.katolika.net', target: "_blank" }
+  ] as const,
+  external: [
+    { name: "Sehatra rindrambaiko", href: 'https://developer.katolika.net' }
   ],
   social: [
     {
       name: 'Facebook',
       href: 'https://www.facebook.com/katolika.net/',
-      icon: (props) => (
+      icon: (props: React.SVGProps<SVGSVGElement>) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
             fillRule="evenodd"
@@ -27,7 +29,7 @@ const navigation = {
     {
       name: 'GitHub',
       href: 'https://developer.katolika.net/?sc=fw',
-      icon: (props) => (
+      icon: (props: React.SVGProps<SVGSVGElement>) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
             fillRule="evenodd"
@@ -52,11 +54,21 @@ export default async function Footer() {
             <Link
               key={item.name}
               href={item.href}
-              target={item.target}
               className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             >
               {__(item.name)}
             </Link>
+          ))}
+          {navigation.external.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+              {__(item.name)}
+            </a>
           ))}
         </nav>
         <div className="flex flex-row justify-between">
