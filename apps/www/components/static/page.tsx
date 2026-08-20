@@ -5,12 +5,12 @@ import { getPathname } from "@/i18n/navigation"
 import Image from "next/image"
 import React from "react"
 
-function CustomH1({ children }:{ children: React.ReactNode }) {
-  return <h1 className="text-red-600">{children}</h1>
+function CustomH1({ children, ...props }: React.ComponentPropsWithoutRef<"h1">) {
+  return <h1 className="text-red-600" {...props}>{children}</h1>
 }
 
-function CustomH2({ children }:{ children: React.ReactNode }) {
-  return <h2 className="text-red-600/80">{children}</h2>
+function CustomH2({ children, ...props }: React.ComponentPropsWithoutRef<"h2">) {
+  return <h2 className="text-red-600/80" {...props}>{children}</h2>
 }
  
 const overrideComponents = {
