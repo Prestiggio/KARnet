@@ -50,10 +50,14 @@ export default function StaticPage(slug: string) {
             routing.locales.map((l) => [l, getPathname({ locale: l, href })])
         )
         languages["x-default"] = getPathname({ locale: routing.defaultLocale, href })
+        const base = process.env.BETTER_AUTH_URL
         return {
             ...resolvedMatter,
             title: `Katolika - ${resolvedMatter.title}`,
-            alternates: { languages },
+            alternates: {
+                canonical: `${base}/${locale}`,
+                languages
+            },
             openGraph: {
                 ...resolvedMatter.openGraph,
                 url: languages[locale],

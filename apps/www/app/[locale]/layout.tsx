@@ -45,12 +45,14 @@ const Barlow = localFont({
 export async function generateMetadata() {
 
   const [locale, __] = await Promise.all([getLocale(), getTranslations()])
+  const base = process.env.BETTER_AUTH_URL
 
   return {
     metadataBase: new URL(process.env.BETTER_AUTH_URL as string),
     title: __('Katolika, Eglizy en ligne'),
     description: __(`Midira amin'ny paroasinao`),
     alternates: {
+      canonical: `${base}/${locale}`,
       languages: {
         mg: "/mg",
         fr: "/fr",
