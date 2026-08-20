@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { NextIntlClientProvider } from 'next-intl';
 import { routing } from "@/i18n/routing";
+import { getTranslations } from "next-intl/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,19 +42,24 @@ const Barlow = localFont({
   variable: "--font-barlow",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.BETTER_AUTH_URL as string),
-  title: "Katolika - Église en ligne",
-  description: "Connectes avec ta paroisse",
-  alternates: {
-    languages: {
-      mg: "/mg",
-      fr: "/fr",
-      en: "/en",
-      "x-default": "/mg",
+export async function generateMetadata() {
+
+  const __ = await getTranslations()
+
+  return {
+    metadataBase: new URL(process.env.BETTER_AUTH_URL as string),
+    title: __('Katolika, Eglizy en ligne'),
+    description: __(`Midira amin'ny paroasinao`),
+    alternates: {
+      languages: {
+        mg: "/mg",
+        fr: "/fr",
+        en: "/en",
+        "x-default": "/mg",
+      },
     },
-  },
-};
+  }
+}
 
 export default async function LocaleLayout({
   children,
