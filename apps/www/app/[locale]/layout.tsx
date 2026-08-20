@@ -42,8 +42,17 @@ const Barlow = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.BETTER_AUTH_URL as string),
   title: "Katolika - Église en ligne",
   description: "Connectes avec ta paroisse",
+  alternates: {
+    languages: {
+      mg: "/mg",
+      fr: "/fr",
+      en: "/en",
+      "x-default": "/mg",
+    },
+  },
 };
 
 export default async function LocaleLayout({

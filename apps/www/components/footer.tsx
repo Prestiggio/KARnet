@@ -28,7 +28,7 @@ const navigation = {
     },
     {
       name: 'GitHub',
-      href: 'https://developer.katolika.net/?sc=fw',
+      href: 'https://developer.katolika.net/',
       icon: (props: React.SVGProps<SVGSVGElement>) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path

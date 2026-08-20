@@ -1,5 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server"
 import { TableOfContents } from "@/components/table-of-contents"
+import { routing } from "@/i18n/routing"
+import { getPathname } from "@/i18n/navigation"
 import Image from "next/image"
 import React from "react"
 
@@ -35,13 +37,23 @@ function resolveMatterVars(value: any, data: any): any {
 
 export default function StaticPage(slug: string) {
 
+    const generateStaticParams = ()=>{
+        return routing.locales.map((locale) => ({ locale }))
+    }
+
     const generateMetadata = async ()=>{
         const locale = await getLocale()
         const [{ matter }, data] = await Promise.all([import(`@/components/static/${slug}/${locale}.mdx`), import(`@/app/[locale]/(RGPD)/rgpd.json`)])
         const resolvedMatter = resolveMatterVars(matter, data)
+        const href = `/${slug}` as Parameters<typeof getPathname>[0]["href"]
+        const languages: Record<string, string> = Object.fromEntries(
+            routing.locales.map((l) => [l, getPathname({ locale: l, href })])
+        )
+        languages["x-default"] = getPathname({ locale: routing.defaultLocale, href })
         return {
             ...resolvedMatter,
-            title: `Katolika - ${resolvedMatter.title}`
+            title: `Katolika - ${resolvedMatter.title}`,
+            alternates: { languages }
         }
     }
 
@@ -68,6 +80,7 @@ export default function StaticPage(slug: string) {
 
     return {
         Page,
-        generateMetadata
+        generateMetadata,
+        generateStaticParams
     }
 }

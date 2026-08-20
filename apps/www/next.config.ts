@@ -3,14 +3,13 @@ import path from "path";
 import dotenv from "dotenv";
 import createMDX from '@next/mdx'
 import createNextIntlPlugin from 'next-intl/plugin';
-import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import { routing } from './i18n/routing'
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-  allowedDevOrigins: ["localhost", "127.0.0.1", "www.katolika.net"],
+  allowedDevOrigins: ["localhost", "127.0.0.1", process.env.BETTER_AUTH_URL as string],
   async redirects() {
     return [
       ...routing.locales
