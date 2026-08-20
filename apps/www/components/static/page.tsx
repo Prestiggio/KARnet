@@ -42,7 +42,7 @@ export default function StaticPage(slug: string) {
     }
 
     const generateMetadata = async ()=>{
-        const locale = await getLocale()
+        const [locale, __] = await Promise.all([getLocale(), getTranslations()])
         const [{ matter }, data] = await Promise.all([import(`@/components/static/${slug}/${locale}.mdx`), import(`@/app/[locale]/(RGPD)/rgpd.json`)])
         const resolvedMatter = resolveMatterVars(matter, data)
         const href = `/${slug}` as Parameters<typeof getPathname>[0]["href"]
@@ -53,7 +53,15 @@ export default function StaticPage(slug: string) {
         return {
             ...resolvedMatter,
             title: `Katolika - ${resolvedMatter.title}`,
-            alternates: { languages }
+            alternates: { languages },
+            openGraph: {
+                ...resolvedMatter.openGraph,
+                url: languages[locale],
+                type: "website",
+                siteName: __("Katolika, Eglizy en ligne"),
+                locale,
+                alternateLocale: routing.locales.filter((l) => l !== locale)
+            }
         }
     }
 

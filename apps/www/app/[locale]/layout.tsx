@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { NextIntlClientProvider } from 'next-intl';
 import { routing } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +44,7 @@ const Barlow = localFont({
 
 export async function generateMetadata() {
 
-  const __ = await getTranslations()
+  const [locale, __] = await Promise.all([getLocale(), getTranslations()])
 
   return {
     metadataBase: new URL(process.env.BETTER_AUTH_URL as string),
@@ -57,6 +57,13 @@ export async function generateMetadata() {
         en: "/en",
         "x-default": "/mg",
       },
+    },
+    openGraph: {
+      url: `/${locale}`,
+      type: "website",
+      siteName: __('Katolika, Eglizy en ligne'),
+      locale,
+      alternateLocale: routing.locales.filter((l) => l !== locale),
     },
   }
 }
