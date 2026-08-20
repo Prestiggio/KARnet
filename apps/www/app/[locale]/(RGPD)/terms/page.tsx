@@ -4,5 +4,5 @@ const staticPage = StaticPage('terms')
 
 export const generateMetadata = staticPage.generateMetadata
 export const generateStaticParams = staticPage.generateStaticParams
-export const revalidate = staticPage.revalidate
+export const revalidate = 3600
 export default staticPage.Page
