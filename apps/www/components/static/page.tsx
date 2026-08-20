@@ -63,7 +63,7 @@ export default function StaticPage(slug: string) {
                 ...resolvedMatter.openGraph,
                 url: languages[locale],
                 type: "website",
-                siteName: __("Katolika, Eglizy en ligne"),
+                siteName: "Katolika",
                 locale: LG_COUNTRIES[locale as keyof typeof LG_COUNTRIES],
                 alternateLocale: routing.locales.filter((l) => l !== locale).map((l) => LG_COUNTRIES[l as keyof typeof LG_COUNTRIES]),
             }
