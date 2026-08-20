@@ -74,20 +74,30 @@ export default function StaticPage(slug: string) {
         const [locale, __, data ] = await Promise.all([getLocale(), getTranslations(), import(`@/app/[locale]/(RGPD)/rgpd.json`)])
         const { default: Post, toc } = await import(`@/components/static/${slug}/${locale}.mdx`)
         return (
-            <div className="flex gap-12">
-                <aside className="hidden w-84 shrink-0 lg:block">
-                    <div className="min-h-lvh sticky top-0 bg-zinc-100 shadow-[35px_0_50px_rgba(0,0,0,0.1)] pb-12">
-                        <div className="flex flex-row items-center gap-x-4 mx-8">
-                            <a href="/"><Image src={`/logo.webp`} width={1024} height={1024} className="w-8 h-8" alt={__(`Katolika, Eglizy en ligne`)}/></a>
-                            <div className="font-barlow font-[300] text-sm tracking-widest">KATOLIKA</div>
+            <>
+                <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-white focus:px-4 focus:py-2 focus:text-red-600 focus:shadow-lg"
+                >
+                    {__(`Mandeha mivantana amin'ny votoaty`)}
+                </a>
+                <div className="flex gap-12">
+                    <aside className="hidden w-84 shrink-0 lg:block">
+                        <div className="min-h-lvh sticky top-0 bg-zinc-100 shadow-[35px_0_50px_rgba(0,0,0,0.1)] pb-12">
+                            <div className="flex flex-row items-center gap-x-4 mx-8">
+                                <a href="/"><Image src={`/logo.webp`} width={1024} height={1024} className="w-8 h-8" alt={__(`Katolika, Eglizy en ligne`)}/></a>
+                                <div className="font-barlow font-[300] text-sm tracking-widest">KATOLIKA</div>
+                            </div>
+                            <TableOfContents data={data} toc={toc} label={__(`Fizarana amin'ny pejy`)} />
                         </div>
-                        <TableOfContents data={data} toc={toc} />
-                    </div>
-                </aside>
-                <article className="my-12 whitespace-pre-line">
-                    <Post data={data} components={overrideComponents}/>
-                </article>
-            </div>
+                    </aside>
+                    <main id="main-content" className="my-12 whitespace-pre-line">
+                        <article>
+                            <Post data={data} components={overrideComponents}/>
+                        </article>
+                    </main>
+                </div>
+            </>
         )
     }
 

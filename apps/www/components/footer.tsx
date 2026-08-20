@@ -68,6 +68,7 @@ export default async function Footer() {
               className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             >
               {__(item.name)}
+              <span className="sr-only"> {__(`(misokatra amin'ny tab vaovao)`)}</span>
             </a>
           ))}
         </nav>
@@ -78,9 +79,10 @@ export default async function Footer() {
                 key={item.name}
                 href={item.href}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-300 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white"
               >
-                <span className="sr-only">{__(item.name)}</span>
+                <span className="sr-only">{__(item.name)} {__(`(misokatra amin'ny tab vaovao)`)}</span>
                 <item.icon aria-hidden="true" className="size-6" />
               </a>
             ))}

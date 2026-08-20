@@ -57,7 +57,7 @@ function TocList({ items }: { items: LinkedNode[] }) {
   )
 }
 
-export function TableOfContents({ data, toc }: { data: any, toc: TocNode[] }) {
+export function TableOfContents({ data, toc, label }: { data: any, toc: TocNode[], label: string }) {
   const slugger = new GithubSlugger()
   const linked = linkify(toc, slugger, data)
 
@@ -67,7 +67,7 @@ export function TableOfContents({ data, toc }: { data: any, toc: TocNode[] }) {
   if (items.length === 0) return null
 
   return (
-    <nav aria-label="Table of contents" className="text-sm">
+    <nav aria-label={label} className="text-sm">
       <TocList items={items} />
     </nav>
   )
