@@ -13,7 +13,7 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-  allowedDevOrigins: ["localhost", "127.0.0.1", process.env.BETTER_AUTH_URL as string],
+  allowedDevOrigins: ["localhost", "127.0.0.1", process.env.SITE_HOST as string],
   async redirects() {
     return [
       ...routing.locales
