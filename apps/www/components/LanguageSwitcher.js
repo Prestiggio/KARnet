@@ -35,7 +35,7 @@ const LanguageSwitcher = ({ locale }) => {
 
     return (
         <nav aria-label="Changer de langue">
-            <ul className="flex gap-2 list-none">
+            <ul className="flex gap-8 md:gap-2 list-none">
                 {LANGUAGES.map(({ code, label, flag }) => {
                     const isCurrent = locale === code;
                     return (

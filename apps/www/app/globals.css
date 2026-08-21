@@ -16,7 +16,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: linear-gradient(180deg, #14151c 0.000%, #171d29 14.286%, #131b1c 28.571%, #201d12 42.857%, #241d0f 57.143%, #231a17 71.429%, #17191a 85.714%, #12161a 100.000%) fixed;
     --foreground: #ededed;
   }
 }
@@ -29,4 +29,10 @@ body {
 
 .heaven {
   background: linear-gradient(180deg, #cecdd7 0.000%, #bdcade 14.286%, #c7d1cc 28.571%, #e4deb8 42.857%, #fde9bd 57.143%, #feebd3 71.429%, #e8e2de 85.714%, #cbd4cf 100.000%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .heaven {
+    background: linear-gradient(180deg, #14151c 0.000%, #171d29 14.286%, #131b1c 28.571%, #201d12 42.857%, #241d0f 57.143%, #231a17 71.429%, #17191a 85.714%, #12161a 100.000%);
+  }
 }

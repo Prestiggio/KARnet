@@ -1,6 +1,10 @@
 import { getLocale, getTranslations } from "next-intl/server"
 import LanguageSwitcher from "./LanguageSwitcher"
-import {Link} from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
+import Image from "next/image";
+import CloseButton from "./close";
+import MenuNavLink from "./menu-nav-link";
+import { MenuProvider } from "./menu-context";
 
 const navigation = {
   main: [
@@ -47,54 +51,65 @@ export default async function Footer() {
   const [__, locale] = await Promise.all([getTranslations(), getLocale()])
 
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900">
-      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-4 lg:px-8">
-        <nav aria-label="Footer" className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm/6">
-          {navigation.main.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              {__(item.name)}
-            </Link>
-          ))}
-          {navigation.external.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              {__(item.name)}
-              <span className="sr-only"> {__(`(misokatra amin'ny tab vaovao)`)}</span>
-            </a>
-          ))}
-        </nav>
-        <div className="flex flex-row justify-between">
-          <div className="flex justify-center gap-x-6">
-            {navigation.social.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-300 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white"
-              >
-                <span className="sr-only">{__(item.name)} {__(`(misokatra amin'ny tab vaovao)`)}</span>
-                <item.icon aria-hidden="true" className="size-6" />
-              </a>
-            ))}
+    <MenuProvider>
+      <footer id="footer" className="w-10/12 pt-3 md:w-auto fixed h-full md:relative flex md:block items-start flex-col justify-between shadow-[15px_0px_15px_rgba(0,0,0,0.15)] bg-gray-50 dark:bg-zinc-800 transition-all duration-200 -ml-90 md:ml-0">
+        <div className="px-4 w-full">
+          <div className="flex md:hidden justify-center my-4">
+            <Link href={`/`}><Image src={`/logo.webp`} className="h-12 w-12" width={200} height={200} alt={__('Katolika, Eglizy en ligne')} /></Link>
           </div>
-          <div className="flex justify-center gap-x-6">
-            <LanguageSwitcher locale={locale}/>
+          <div className="mx-auto md:max-w-7xl lg:px-8 block md:flex justify-between">
+            <div className="hidden md:flex mt-8 lg:mt-0 justify-center gap-x-6">
+              {navigation.social.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-gray-400 dark:text-gray-300 dark:hover:text-white"
+                >
+                  <span className="sr-only">{__(item.name)} {__(`(misokatra amin'ny tab vaovao)`)}</span>
+                  <item.icon aria-hidden="true" className="size-6" />
+                </a>
+              ))}
+            </div>
+            <nav aria-label="Footer" className="block divide-y-1 divide-zinc-200 md:divide-y-0 md:flex md:flex-wrap md:justify-center gap-x-6 gap-y-3 text-sm/6">
+              {navigation.main.map((item) => (
+                <MenuNavLink
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm block h-12 pt-4 md:pt-0 md:h-auto md:inline text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                >
+                  {__(item.name)}
+                </MenuNavLink>
+              ))}
+              {navigation.external.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-600 block h-12 md:h-auto md:inline pt-4 md:pt-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                >
+                  {__(item.name)}
+                  <span className="sr-only"> {__(`(misokatra amin'ny tab vaovao)`)}</span>
+                </a>
+              ))}
+            </nav>
+            <div className="hidden md:flex justify-center">
+              <LanguageSwitcher locale={locale} />
+            </div>
           </div>
         </div>
-        <p className="mt-2 text-center text-sm/6 text-gray-600 dark:text-gray-400">
-          &copy; 2026 Apostolat Digital Katolika. Tous droits réservés.
-        </p>
-      </div>
-    </footer>
+        <div className="mx-auto md:max-w-7xl lg:px-8">
+          <div className="flex justify-center my-4 md:hidden">
+            <LanguageSwitcher locale={locale} />
+          </div>
+          <p className="py-2 text-xs text-center md:text-sm/6 text-gray-600 dark:text-gray-400">
+            &copy; 2026 Apostolat Digital Katolika. Tous droits réservés.
+          </p>
+        </div>
+      </footer>
+      <CloseButton />
+    </MenuProvider>
   )
 }

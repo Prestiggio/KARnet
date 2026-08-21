@@ -7,11 +7,11 @@ import React from "react"
 import { LG_COUNTRIES } from "@/lib/utils"
 
 function CustomH1({ children, ...props }: React.ComponentPropsWithoutRef<"h1">) {
-  return <h1 className="text-red-600" {...props}>{children}</h1>
+  return <h1 className="text-red-600 dark:text-white" {...props}>{children}</h1>
 }
 
 function CustomH2({ children, ...props }: React.ComponentPropsWithoutRef<"h2">) {
-  return <h2 className="text-red-600/80" {...props}>{children}</h2>
+  return <h2 className="text-red-600/80 dark:text-white/80" {...props}>{children}</h2>
 }
  
 const overrideComponents = {
@@ -83,7 +83,7 @@ export default function StaticPage(slug: string) {
                 </a>
                 <div className="flex gap-12">
                     <aside className="hidden w-84 shrink-0 lg:block">
-                        <div className="min-h-lvh sticky top-0 bg-zinc-100 shadow-[35px_0_50px_rgba(0,0,0,0.1)] pb-12">
+                        <div className="min-h-lvh sticky top-0 bg-zinc-100 dark:bg-zinc-800/80 shadow-[35px_0_50px_rgba(0,0,0,0.1)] pb-12">
                             <div className="flex flex-row items-center gap-x-4 mx-8">
                                 <a href="/"><Image src={`/logo.webp`} width={1024} height={1024} className="w-8 h-8" alt={__(`Katolika, Eglizy en ligne`)}/></a>
                                 <div className="font-barlow font-[300] text-sm tracking-widest">KATOLIKA</div>
@@ -91,7 +91,7 @@ export default function StaticPage(slug: string) {
                             <TableOfContents data={data} toc={toc} label={__(`Fizarana amin'ny pejy`)} />
                         </div>
                     </aside>
-                    <main id="main-content" className="my-12 whitespace-pre-line">
+                    <main id="main-content" className="my-12 px-4 md:px-12 whitespace-pre-line">
                         <article>
                             <Post data={data} components={overrideComponents}/>
                         </article>
