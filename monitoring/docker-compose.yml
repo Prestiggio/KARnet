@@ -1,0 +1,15 @@
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    restart: unless-stopped
+    ports: ["3001:3000"]
+    environment:
+      DATABASE_URL: postgresql://${UMAMI_DB_USER}:${UNAMI_DB_PASSWORD:?}@${UNAMI_DB_HOST}:${UNAMI_DB_PORT}/${UNAMI_DB_DATABASE}
+      APP_SECRET: ${UMAMI_APP_SECRET:?}
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    ports: ["3002:3001"]
+    volumes:
+      - ./data/uptime-kuma:/app/data

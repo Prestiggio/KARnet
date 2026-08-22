@@ -1,0 +1,39 @@
+x-environment: &default-environment
+  DATABASE_URL: postgres://${GT_DB_USER}:${GT_DB_PASSWORD}@${GT_DB_HOST}:${GT_DB_PORT}/${GT_DB_DATABASE}
+  VALKEY_URL: redis://valkey:6379 # Or set to blank string to disable
+  SECRET_KEY: ${GT_SECRET_KEY} # best to run openssl rand -hex 32
+  EMAIL_URL: smtp://${SMTP_USER}:${SMTP_PASSWORD}@${SMTP_HOST}:${SMTP_PORT} # Example smtp://email:password@smtp_url:port https://glitchtip.com/documentation/install#configuration
+  GLITCHTIP_DOMAIN: ${GT_DOMAIN} # Change this to your domain
+  DEFAULT_FROM_EMAIL: ${SMTP_FROM_EMAIL} # Change this to your email
+  ENABLE_ADMIN: "False" # Set to True to enable Django Admin at /admin/
+  ENABLE_OPENAPI: "False" # Set to True to enable OpenAPI spec at /api/docs
+  GLITCHTIP_ENABLE_MCP: "False" # Set to True to enable MCP server
+  GLITCHTIP_ENABLE_DUCKDB: "False" # Set to True to enable cold storage archival
+  # PORT: 8000 # If changing, change the web service port too
+
+  ## To reduce RAM usage (targeting 256-512 MB), consider disabling:
+  # VALKEY_URL: "" # Disable Valkey, use Postgres for task queue and cache
+  # GLITCHTIP_ENABLE_LOGS: "False" # Disable log ingestion
+  # GLITCHTIP_ENABLE_UPTIME: "False" # Disable uptime monitoring
+
+x-depends_on: &default-depends_on
+  - valkey # Remove when disabling Valkey
+
+services:
+  valkey: # Recommended. Remove this service when disabling Valkey.
+    image: valkey/valkey:9
+    restart: unless-stopped
+  web:
+    image: glitchtip/glitchtip:6 # Check https://glitchtip.com/blog/ for new major versions
+    depends_on: *default-depends_on
+    ports:
+      - "8000:8000"
+    environment:
+      <<: *default-environment
+      SERVER_ROLE: all_in_one
+    restart: unless-stopped
+    volumes:
+      - uploads:/code/uploads
+
+volumes:
+  uploads:

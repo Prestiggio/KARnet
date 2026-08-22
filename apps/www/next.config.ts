@@ -3,7 +3,8 @@ import path from "path";
 import dotenv from "dotenv";
 import createMDX from '@next/mdx'
 import createNextIntlPlugin from 'next-intl/plugin';
-import { routing } from './i18n/routing'
+import { routing } from './i18n/routing';
+import { withSentryConfig } from '@sentry/nextjs';
 
 // Combine the app-local .env with the monorepo root .env (shared DB/service
 // credentials). dotenv.config() never overrides an already-set var, so the
@@ -49,4 +50,13 @@ const withMDX = createMDX({
 
 const withNextIntl = createNextIntlPlugin();
 
-export default withNextIntl(withMDX(nextConfig));
+export default withSentryConfig(withNextIntl(withMDX(nextConfig)), {
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  org: process.env.SENTRY_ORGANIZATION,
+  project: process.env.SENTRY_PROJECT,
+  sentryUrl: process.env.SENTRY_URL,
+  release: {
+    name: process.env.npm_package_version,
+  },
+});
+
