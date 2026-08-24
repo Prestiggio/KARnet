@@ -94,8 +94,8 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           {children}
         </NextIntlClientProvider>
-        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/script.js`} />
-        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/recorder.js`} />
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`/script.js`} />
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`/recorder.js`} />
       </body>
     </html>
   );
