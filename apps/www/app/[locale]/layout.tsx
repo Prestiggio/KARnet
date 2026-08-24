@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { routing } from "@/i18n/routing";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LG_COUNTRIES } from "@/lib/utils";
+import Script from 'next/script'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,6 +94,8 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           {children}
         </NextIntlClientProvider>
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/script.js`} />
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/recorder.js`} />
       </body>
     </html>
   );
