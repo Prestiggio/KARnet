@@ -52,7 +52,7 @@ export default async function Footer() {
 
   return (
     <MenuProvider>
-      <footer id="footer" className="w-10/12 pt-3 md:w-auto fixed h-full md:relative flex md:block items-start flex-col justify-between shadow-[15px_0px_15px_rgba(0,0,0,0.15)] bg-gray-50 dark:bg-zinc-800 transition-all duration-200 -ml-90 md:ml-0">
+      <footer id="footer" className="w-10/12 pt-3 md:w-auto fixed z-100 h-full md:relative flex md:block items-start flex-col justify-between shadow-[15px_0px_15px_rgba(0,0,0,0.15)] bg-gray-50 dark:bg-zinc-800 transition-all duration-200 -ml-120 md:ml-0">
         <div className="px-4 w-full">
           <div className="flex md:hidden justify-center my-4">
             <Link href={`/`}><Image src={`/logo.webp`} className="h-12 w-12" width={200} height={200} alt={__('Katolika, Eglizy en ligne')} /></Link>

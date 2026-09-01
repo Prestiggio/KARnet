@@ -1,6 +1,6 @@
 import Footer from "@/components/footer";
 import { NextIntlClientProvider, useTranslations } from 'next-intl';
-import "./globals.css";
+import "../globals.css";
 import BackButton from "@/components/back-button";
 
 export const dynamic = 'force-dynamic'

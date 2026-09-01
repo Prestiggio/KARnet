@@ -14,19 +14,19 @@ export default function CloseButton() {
             btn.current?.setSegment(50, 75)
             btn.current?.setFrame(50)
             btn.current?.play()
-            document.getElementById('footer')?.classList.add('-ml-90')
+            document.getElementById('footer')?.classList.add('-ml-120')
             document.getElementById('content')?.classList.remove('blur-xs')
         }
         else {
             btn.current?.setSegment(7, 28)
             btn.current?.setFrame(7)
             btn.current?.play()
-            document.getElementById('footer')?.classList.remove('-ml-90')
+            document.getElementById('footer')?.classList.remove('-ml-120')
             document.getElementById('content')?.classList.add('blur-xs')
         }
     }, [closed])
 
-    return <button type="button" className="pt-4 fixed right-0 md:hidden grow max-w-2/12 dark:text-white" onClick={toggle}>
+    return <button type="button" className="pt-4 fixed z-100 right-0 md:hidden grow max-w-2/12 dark:text-white" onClick={toggle}>
         <DotLottieReact
             src="/lottie/close-anim.lottie"
             autoplay={false}

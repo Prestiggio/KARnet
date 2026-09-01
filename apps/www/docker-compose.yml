@@ -1,6 +1,6 @@
 services:
   www:
-    image: node:22-alpine
+    image: node:26.8.1-alpine
     container_name: katolika-main-website
     working_dir: /app
     ports:
@@ -12,9 +12,8 @@ services:
     environment:
       NODE_ENV: development
       WATCHPACK_POLLING: "true"
+      CI: "true"
     command: sh -c "npm install && npm run dev"
-    stdin_open: true
-    tty: true
 
 
 volumes:

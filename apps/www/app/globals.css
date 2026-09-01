@@ -36,3 +36,62 @@ body {
     background: linear-gradient(180deg, #14151c 0.000%, #171d29 14.286%, #131b1c 28.571%, #201d12 42.857%, #241d0f 57.143%, #231a17 71.429%, #17191a 85.714%, #12161a 100.000%);
   }
 }
+
+::view-transition-old(.forward) {
+  --slide-offset: -60px;
+  animation:
+    150ms ease-in both view-transition-fade reverse,
+    400ms ease-in-out both view-transition-slide reverse;
+}
+::view-transition-new(.forward) {
+  --slide-offset: 60px;
+  animation:
+    210ms ease-out 150ms both view-transition-fade,
+    400ms ease-in-out both view-transition-slide;
+}
+
+::view-transition-old(.back) {
+  --slide-offset: 60px;
+  animation:
+    150ms ease-in both view-transition-fade reverse,
+    400ms ease-in-out both view-transition-slide reverse;
+}
+::view-transition-new(.back) {
+  --slide-offset: -60px;
+  animation:
+    210ms ease-out 150ms both view-transition-fade,
+    400ms ease-in-out both view-transition-slide;
+}
+
+@keyframes view-transition-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes view-transition-slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+.btn-add-parish {
+  background: #7F7FD5;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #91EAE4, #86A8E7, #7F7FD5);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #91EAE4, #86A8E7, #7F7FD5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}

@@ -20,6 +20,14 @@ export const routing = defineRouting({
     '/privacy': {
       mg: '/zo-tsiambarantelo',
       fr: '/politique-de-confidentialite'
+    },
+    '/parishes': {
+      mg: '/paroasy-rehetra',
+      fr: '/paroisses'
+    },
+    '/parishes/[id]/login': {
+      mg: '/paroasy/[id]/miditra',
+      fr: '/paroisse/[id]/connexion'
     }
   }
 });

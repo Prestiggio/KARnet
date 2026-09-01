@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { NextIntlClientProvider } from 'next-intl';
 import { routing } from "@/i18n/routing";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { LG_COUNTRIES } from "@/lib/utils";
 import Script from 'next/script'
+import IntlErrorHandlingProvider from "@/components/IntlErrorHandlingProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,17 +84,19 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  const messages = await getMessages();
+
   return (
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>
+        <IntlErrorHandlingProvider locale={locale} messages={messages}>
           {children}
-        </NextIntlClientProvider>
-        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`/script.js`} />
-        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`/recorder.js`} />
+        </IntlErrorHandlingProvider>
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/script.js`} />
+        <Script defer={true} data-website-id={process.env.UMAMI_SITE_ID} src={`${process.env.UMAMI_HOST}/recorder.js`} />
       </body>
     </html>
   );

@@ -15,6 +15,11 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   allowedDevOrigins: ["localhost", "127.0.0.1", process.env.SITE_HOST as string],
+  images: {
+    remotePatterns: process.env.NEXT_PUBLIC_CDN_HOST
+      ? [new URL(`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/**`)]
+      : [],
+  },
   async redirects() {
     return [
       ...routing.locales
