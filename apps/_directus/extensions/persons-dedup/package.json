@@ -2,7 +2,7 @@
 	"name": "persons-dedup",
 	"description": "Vérification de doublon (Elasticsearch) avant création d'une personne",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -76,6 +76,7 @@
 	},
 	"dependencies": {
 		"@heroicons/react": "^2.2.0",
+		"neo4j-driver": "^6.2.0",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8"
 	}

@@ -7,6 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/api/",
     },
-    sitemap: process.env.BETTER_AUTH_URL + "/sitemap.xml",
+    sitemap: [
+      process.env.BETTER_AUTH_URL + "/sitemap.xml",
+      process.env.BETTER_AUTH_URL + "/parishes/sitemap/0.xml",
+    ],
   };
 }

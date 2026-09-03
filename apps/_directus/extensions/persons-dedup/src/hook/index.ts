@@ -1,5 +1,6 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { esRequest } from '../lib/esClient';
+import neo4j, { Node as Neo4jNode, Path } from 'neo4j-driver';
 
 /**
  * Indexe les collections "persons" et "articles" dans Elasticsearch :
@@ -15,6 +16,11 @@ import { esRequest } from '../lib/esClient';
 export default defineHook(({ action }, { env, logger }) => {
 	const index = String(env.PERSONS_ES_INDEX ?? 'persons');
 	const articlesIndex = String(env.ARTICLES_ES_INDEX ?? 'articles');
+	const driver = neo4j.driver(
+		env.NEO4J_URI,
+		neo4j.auth.basic(env.NEO4J_USER ?? 'neo4j', env.NEO4J_PASSWORD)
+	);
+	const session = driver.session();
 
 	async function indexPerson(id: string, doc: Record<string, unknown>) {
 		try {
@@ -30,6 +36,27 @@ export default defineHook(({ action }, { env, logger }) => {
 		} catch (err: any) {
 			logger.error(`Elasticsearch sync failed for person ${id}: ${err.message}`);
 		}
+	}
+
+	async function createNode(person: Record<string, unknown>) {
+		const result = await session.executeWrite((tx) =>
+			tx.run(
+				`MERGE (p:Person {id: $person.id})
+				SET p.first_name = $person.firstname, p.last_name = $person.lastname, p.tag = "katolika"`
+			, {person})
+		);
+		return result
+	}
+
+	async function deleteNode(id: string) {
+		const result = await session.executeWrite((tx) =>
+			tx.run(
+				`MATCH (n:Person)
+				WHERE n.id = $id
+				DETACH DELETE n`
+			, {id})
+		);
+		return result
 	}
 
 	async function deletePerson(id: string) {
@@ -79,11 +106,15 @@ export default defineHook(({ action }, { env, logger }) => {
 	}
 
 	action('persons.items.create', async ({ payload, key }) => {
-		await indexPerson(String(key), {
+		const person = {
 			lastname: payload.lastname ?? null,
 			firstname: payload.firstname ?? null,
 			birthdate: payload.birthdate ?? null,
-		});
+		}
+		await Promise.all([
+			indexPerson(String(key), person),
+			createNode({...person, id: String(key)})
+		]);
 	});
 
 	action('persons.items.update', async ({ payload, keys }) => {
@@ -94,13 +125,19 @@ export default defineHook(({ action }, { env, logger }) => {
 		if (Object.keys(doc).length === 0) return;
 
 		for (const key of keys) {
-			await indexPerson(String(key), doc);
+			await Promise.all([
+				indexPerson(String(key), doc),
+				createNode({...doc, id: String(key)})
+			]);
 		}
 	});
 
 	action('persons.items.delete', async ({ keys }) => {
 		for (const key of keys) {
-			await deletePerson(String(key));
+			await Promise.all([
+				deletePerson(String(key)),
+				deleteNode(String(key))
+			]);
 		}
 	});
 

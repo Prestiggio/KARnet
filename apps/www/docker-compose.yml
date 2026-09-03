@@ -5,17 +5,16 @@ services:
     working_dir: /app
     ports:
       - "3000:3000"
+      - "9230:9230"
     volumes:
       - .:/app
       - www_node_modules:/app/node_modules
-      - www_next_cache:/app/.next
     environment:
       NODE_ENV: development
       WATCHPACK_POLLING: "true"
       CI: "true"
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && node --inspect=0.0.0.0:9229 ./node_modules/.bin/next dev"
 
 
 volumes:
   www_node_modules:
-  www_next_cache:

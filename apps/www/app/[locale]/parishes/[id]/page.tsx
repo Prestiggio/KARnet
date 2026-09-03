@@ -74,7 +74,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     };
 }
 
-export default async function LoginPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
     const [{ id }, __] = await Promise.all([
         params,
         getTranslations()
@@ -110,6 +110,9 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                     <div className="text-4xl md:text-5xl font-barlow font-[400]">
                         {parish.name}
                     </div>
+                    <div className="pt-3 text-sm text-zinc-500">
+                        Tsy mbola misy vaovao voaray
+                    </div>
                     <div className="min-h-50 prose dark:prose-invert my-8 max-w-none">
                         
                     </div>
@@ -120,14 +123,14 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                         <table className="w-full border-collapse border-spacing-[10px]">
                             <tbody>
                                 {pastor && <tr>
-                                    <td className="text-nowrap align-top text-right text-zinc-500">*{__(`Curé`)} : </td>
+                                    <td className="text-nowrap align-top text-right text-zinc-500">{__(`Curé`)} : </td>
                                     <td>
                                         <div className="font-bold">{pastor?.title} {pastor?.assigned?.lastname} {pastor?.assigned?.firstname}</div>
                                         <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(pastor?.start_at).format('Y')}</div>
                                     </td>
                                 </tr>}
                                 {vicars.map((vicar: any) => <tr key={vicar.id}>
-                                    <td className="text-nowrap align-top text-right text-zinc-500">*{__(`Vicaire`)} : </td>
+                                    <td className="text-nowrap align-top text-right text-zinc-500">{__(`Vicaire`)} : </td>
                                     <td>
                                         <div className="font-bold">{vicar?.title} {vicar?.assigned?.lastname} {vicar?.assigned?.firstname}</div>
                                         <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(vicar?.start_at).format('Y')}</div>
