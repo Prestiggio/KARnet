@@ -7,7 +7,8 @@ import Image from 'next/image'
 import GoogleSignIn from './google'
 import { useSearchParams } from 'next/navigation'
 import { match } from "next/dist/compiled/path-to-regexp";
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { trackEvent } from '@/lib/umami'
 
 export default function LoginForm() {
     const __ = useTranslations()
@@ -24,7 +25,35 @@ export default function LoginForm() {
     if(redirect && matcher(redirect) !== false)
         context = "parish_create"
 
-    return <div className='space-y-4'>
+    const submitClicks = useRef<number[]>([])
+    const rageClickReported = useRef(false)
+
+    const handleSubmitClick = () => {
+        const now = Date.now()
+        submitClicks.current = [...submitClicks.current, now].filter(t => now - t < 2000)
+        if (submitClicks.current.length >= 3 && !rageClickReported.current) {
+            rageClickReported.current = true
+            trackEvent('login_rage_click', { clicks: submitClicks.current.length, context })
+        }
+    }
+
+    const handleInvalid = (event: React.InvalidEvent<HTMLInputElement>) => {
+        trackEvent('login_field_validation_error', {
+            field: event.currentTarget.name || event.currentTarget.type,
+            context,
+        })
+    }
+
+    const handleFieldAbandon = (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget.value === '') {
+            trackEvent('login_field_abandoned', {
+                field: event.currentTarget.name || event.currentTarget.type,
+                context,
+            })
+        }
+    }
+
+    return <form className='space-y-4'>
         <div className='text-center'>
             <Link href={`/`}><Image src={`/logo.webp`} width={1024} height={1024} className="h-12 w-12 mx-auto" alt={__(`Katolika, Eglizy en ligne`)}/></Link>
         </div>
@@ -40,19 +69,19 @@ export default function LoginForm() {
         </div>}
         <div className='md:flex space-x-8 space-y-4 md:space-y-0'>
             <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-                <input type='email' placeholder={__(`Email`)} autoFocus className='focus:outline-0 flex-1'/>
+                <input type='email' name='email' required placeholder={__(`Email`)} autoFocus className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon}/>
                 <Mail className='inline-block text-slate-500'/>
             </div>
             {providers.includes('sms') && <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-                <input type='phone' placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1'/>
+                <input type='phone' name='phone' required placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon}/>
                 <Smartphone className='inline-block text-slate-500'/>
             </div>}
         </div>
         <div className='flex focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-            <input type='text' placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1'/>
+            <input type='text' name='fullname' placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1'/>
             <User2 className='inline-block text-slate-500'/>
         </div>
-        <button className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2'>
+        <button type='submit' onClick={handleSubmitClick} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400'>
             {__(`'zay`)}
         </button>
         {providers.includes('google') && <div className='border-t-1 dark:border-slate-500 pt-4'>
@@ -60,5 +89,5 @@ export default function LoginForm() {
                 <GoogleSignIn/>
             </div>}
         </div>}
-    </div>
+    </form>
 }

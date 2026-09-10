@@ -42,16 +42,19 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
         }
         const data = Object.fromEntries(new FormData(e.currentTarget))
         const [response] = await Promise.all([
-            fetch(`/parishes/create/api`)
+            fetch(`/parishes/create/api`, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
         ])
-        const { token } = await response.json()
-        await session(token, data)
-        document.location.href = `/parishes/create/${token}`
-        /*await fetch('/parishes/create/api', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        })*/
+        try {
+            const { token } = await response.json()
+            await session(token, data)
+            document.location.href = `/parishes/create/${token}`
+        }
+        catch(e) {
+            document.location.href = '/'
+        }
     }
 
     return <form id={formId} className='grow shadow-[0_0_50px_rgba(0,0,0,0.1)] flex flex-col justify-center p-4 md:p-8 md:my-8 md:max-w-4xl mx-auto w-full md:min-w-3xl space-y-8' onSubmit={onSubmit}>
