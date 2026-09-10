@@ -29,7 +29,22 @@ function isProtected(pathname: string) {
 }
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
+  const src = searchParams.get('utm_source')
+  let provider: 'facebook' | 'google' | null = null
+  if (src === 'facebook' || searchParams.has('fbclid')) provider = 'facebook'
+  else if (src === 'google' || searchParams.has('gclid')) provider = 'google'
+
+  const setProviderCookie = (response: NextResponse) => {
+    if(provider) {
+      response.cookies.set('auth_hint', provider, {
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: 'lax',
+        httpOnly: false,
+      })
+    }
+    return response
+  }
 
   if (isProtected(request.nextUrl.pathname)) {
     const session = await auth.api.getSession({
@@ -40,9 +55,9 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = "/sign-in";
       url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(new URL(url));
+      return setProviderCookie(NextResponse.redirect(new URL(url)));
     }
   }
 
-  return intlMiddleware(request);
+  return setProviderCookie(intlMiddleware(request));
 }
