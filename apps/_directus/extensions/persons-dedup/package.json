@@ -64,7 +64,7 @@
 		"validate": "directus-extension validate"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "18.0.1",
+		"@directus/extensions-sdk": "18.0.4",
 		"@directus/sdk": "^23.0.0",
 		"@tailwindcss/postcss": "^4.3.3",
 		"autoprefixer": "^10.5.4",

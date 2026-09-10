@@ -39,7 +39,7 @@
 		"link": "directus-extension link"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "^13.0.0",
+		"@directus/extensions-sdk": "18.0.4",
 		"@directus/sdk": "^23.0.0",
 		"@rollup/plugin-replace": "^6.0.0",
 		"@types/react": "^18.3.0",

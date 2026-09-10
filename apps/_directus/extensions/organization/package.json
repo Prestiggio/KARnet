@@ -44,7 +44,7 @@
 		"validate": "directus-extension validate"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "18.0.1",
+		"@directus/extensions-sdk": "18.0.4",
 		"@rollup/plugin-image": "^3.0.3",
 		"@tailwindcss/postcss": "^4.3.3",
 		"@types/node": "^26.1.1",
