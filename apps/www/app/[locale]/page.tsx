@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Footer from "@/components/footer";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
+import { Link } from '@/i18n/navigation'
 
 import SearchForm from "@/components/parish/search";
 import { ViewTransition } from "react";

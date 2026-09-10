@@ -8,7 +8,7 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 // créées.
 export default defineEndpoint({
 	id: 'report',
-	handler: (router) => {
+	handler: (router, { database }) => {
 		router.get('/:primaryKey', async (req, res) => {
 			const accountability = (req as any).accountability;
 			if (!accountability?.user) {
@@ -44,5 +44,45 @@ export default defineEndpoint({
 				},
 			});
 		});
+
+		router.post('/:primaryKey', async (req, res) => {
+			const accountability = (req as any).accountability;
+			if (!accountability?.user) {
+				return res.status(401).json({ error: 'Unauthorized' });
+			}
+
+			const organization_id = req.params.primaryKey;
+
+			const { date, obs_value, is_estimate = false } = req.body;
+
+			if (!organization_id || !date || obs_value === undefined) {
+				return res.status(400).json({ error: 'organization_id, date and obs_value are required' });
+			}
+
+			await database.raw(
+				`WITH p AS (SELECT ?::date AS d)
+				INSERT INTO stat_observations
+				  (id, ref_area, indicator, freq, time_period, time_start, time_end,
+				   obs_value, schedule, obs_status, source, collected_at)
+				SELECT gen_random_uuid(),?,
+				       (SELECT id FROM stat_indicators WHERE code = 'MASS_ATTEND'),
+				       stat_code_id('CL_FREQ','D'), to_char(p.d,'YYYY-MM-DD'), p.d, p.d,
+				       ?,
+				       stat_code_id('CL_SCHEDULE', '_T'),
+				       stat_code_id('CL_OBS_STATUS', ?),
+				       'declared',
+				       now()
+				FROM p
+				ON CONFLICT (ref_area, indicator, freq, time_period,
+				             sex, age_group, schedule, offering_type)
+				DO UPDATE SET obs_value    = EXCLUDED.obs_value,
+				              obs_status   = EXCLUDED.obs_status,
+				              source       = EXCLUDED.source,
+				              collected_at = EXCLUDED.collected_at`,
+				[date, organization_id, obs_value, is_estimate ? 'E' : 'A']
+			);
+
+			return res.status(200).json({ ok: true });
+		})
 	},
 });

@@ -25,6 +25,7 @@ export const routing = defineRouting({
       mg: '/paroasy-rehetra',
       fr: '/paroisses'
     },
+    '/parishes/create': '/parishes/create',
     '/parishes/[id]': {
       mg: '/paroasy/[id]',
       fr: '/paroisse/[id]'

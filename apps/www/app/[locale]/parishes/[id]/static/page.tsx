@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { getPage } from "@/lib/entities/pages";
 import { LG_COUNTRIES, MGMoment } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from '@/i18n/navigation'
 import { ViewTransition } from "react";
 import moment from 'moment'
 
@@ -91,12 +91,14 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
         getPlaces(parish.id),
         getAssigned('Pastor', parish.id),
         getAssigned('Parochial Vicar', parish.id)
-    ])
-
+    ]) 
     const mock = {
         date_updated: moment().subtract(Math.floor(Math.random() * 14) + 1, 'days').startOf('day'),
-        baptized_count: 5400,
-        faithful_count: 1200,
+        baptized: {
+            date: moment().year(2024),
+            count: 3907
+        },
+        faithful_count: 1208,
         baptism_update: {
             date: moment().subtract(Math.floor(Math.random() * 14) + 1, 'days').startOf('day'),
             count: 6
@@ -138,7 +140,7 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
 
     return <div className="grow flex flex-col">
         <header className="px-5 py-3 border-b border-1 border-zinc-200">
-            <Link href={`/`} transitionTypes={['back']} className="text-barlow flex items-center gap-3">
+            <Link href={`/`} transitionTypes={['back']} className="font-barlow flex items-center gap-3">
                 <Image src={`/logo.webp`} width={480} height={480} alt={__(`Katolika, Eglizy en ligne`)} className="w-7 h-7" />
                 KATOLIKA
             </Link>
@@ -152,7 +154,7 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                     <Image src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture?.id}`} width={parish.picture?.width} height={parish.picture?.height} alt={parish.name} className="h-full object-cover" />
                 </div>
                 <div className="md:w-6/12 p-6">
-                    <span className="uppercase text-zinc-500 text-barlow tracking-widest">{diocese?.name}</span>
+                    <span className="uppercase text-zinc-500 font-barlow tracking-widest">{diocese?.name}</span>
                     <div className="text-4xl md:text-5xl font-barlow font-[400]">
                         {parish.name}
                     </div>
@@ -160,28 +162,26 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                         {__(`Vaovao voaray`)} {mock.date_updated.fromNow()}
                     </div>
                     <div className="min-h-50 prose dark:prose-invert my-8 max-w-none">
-                        <table className="w-full border-spacing-4 border-1 border-zinc-300">
+                        <table className="w-full border-spacing-4">
                             <tbody>
                                 <tr className="divide-x divide-zinc-300">
-                                    <td className="px-6 divide-y divide-zinc-300 space-y-4">
-                                        <div>
-                                            <div className="text-nowrap text-4xl">{new Intl.NumberFormat('fr-MG').format(mock.baptized_count)}</div>
-                                            <span className="text-zinc-500">{__(`Kristianina vita batemy`)}</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-nowrap text-3xl">{new Intl.NumberFormat('fr-MG').format(mock.faithful_count)}</div>
-                                            <span className="text-zinc-500">{__(`Nankamasina ny`)} {moment().day(0).startOf('day').format('dddd LL')}</span>
-                                        </div>
+                                    <td className="px-6 divide-y divide-dashed divide-zinc-300">
+                                        <div className="text-nowrap text-4xl">{new Intl.NumberFormat('fr-MG').format(mock.baptized.count)}</div>
+                                        <div className="text-zinc-500 text-sm/4">{__(`Kristianina vita batemy`)} {mock.baptized.date.fromNow()}</div>
                                     </td>
-                                    <td className="px-6 divide-y divide-zinc-300 space-y-4">
-                                        <div>
-                                            <div className="text-nowrap text-4xl">{new Intl.NumberFormat('fr-MG').format(mock.baptism_update.count)}</div>
-                                            <span className="text-zinc-500">{__(`Natao batemy tamin'ny`)} {mock.baptism_update.date.fromNow()}</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-nowrap text-3xl">{new Intl.NumberFormat('fr-MG').format(mock.deceased_update.count)}</div>
-                                            <span className="text-zinc-500">{__(`Nodimandry ny herinandro lasa teo`)}</span>
-                                        </div>
+                                    <td className="px-6 divide-y divide-dashed divide-zinc-300">
+                                        <div className="text-nowrap text-4xl">{new Intl.NumberFormat('fr-MG').format(mock.baptism_update.count)}</div>
+                                        <div className="text-zinc-500 text-sm/4">{__(`Natao batemy tamin'ny`)} {mock.baptism_update.date.fromNow()}</div>
+                                    </td>
+                                </tr>
+                                <tr className="divide-x divide-zinc-300">
+                                    <td className="px-6 divide-y divide-dashed divide-zinc-300">
+                                        <div className="text-nowrap text-3xl">{new Intl.NumberFormat('fr-MG').format(mock.faithful_count)}</div>
+                                        <div className="text-zinc-500 text-sm/4">{__(`Nankamasina ny`)} {moment().day(0).startOf('day').format('dddd LL')}</div>
+                                    </td>
+                                    <td className="px-6 divide-y divide-dashed divide-zinc-300">
+                                        <div className="text-nowrap text-3xl">{new Intl.NumberFormat('fr-MG').format(mock.deceased_update.count)}</div>
+                                        <div className="text-zinc-500 text-sm/4">{__(`Nodimandry ny herinandro lasa teo`)}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -190,8 +190,8 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                         <table className="w-full border-collapse border-spacing-4">
                             <tbody>
                                 {mock.meetings.map((meeting, idx)=><tr key={idx}>
-                                    <td>{moment(meeting.date).format('dddd LL')}</td>
-                                    <td>{meeting.description}</td>
+                                    <td className="font-barlow">{moment(meeting.date).format('dddd LL')}</td>
+                                    <td className="text-zinc-500">{meeting.description}</td>
                                 </tr>)}
                             </tbody>
                         </table>

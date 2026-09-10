@@ -5,6 +5,7 @@ import Image from "next/image";
 import CloseButton from "./close";
 import MenuNavLink from "./menu-nav-link";
 import { MenuProvider } from "./menu-context";
+import AuthMenu from "@/components/auth/menu";
 
 const navigation = {
   main: [
@@ -53,11 +54,12 @@ export default async function Footer() {
   return (
     <MenuProvider>
       <footer id="footer" className="w-10/12 pt-3 md:w-auto fixed z-100 h-full md:relative flex md:block items-start flex-col justify-between shadow-[15px_0px_15px_rgba(0,0,0,0.15)] bg-gray-50 dark:bg-zinc-800 transition-all duration-200 -ml-120 md:ml-0">
-        <div className="px-4 w-full">
+        <div className="w-full">
           <div className="flex md:hidden justify-center my-4">
             <Link href={`/`}><Image src={`/logo.webp`} className="h-12 w-12" width={200} height={200} alt={__('Katolika, Eglizy en ligne')} /></Link>
           </div>
-          <div className="mx-auto md:max-w-7xl lg:px-8 block md:flex justify-between">
+          <AuthMenu/>
+          <div className="px-4 mx-auto md:max-w-7xl lg:px-8 block md:flex justify-between">
             <div className="hidden md:flex mt-8 lg:mt-0 justify-center gap-x-6">
               {navigation.social.map((item) => (
                 <a
@@ -100,7 +102,7 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="mx-auto md:max-w-7xl lg:px-8">
+        <div className="mx-auto md:max-w-7xl px-4 lg:px-8">
           <div className="flex justify-center my-4 md:hidden">
             <LanguageSwitcher locale={locale} />
           </div>

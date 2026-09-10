@@ -1,23 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import directus from "@/lib/directus";
-import { render } from '@react-email/render';
-import CreateParishMail from "@/emails/parishes/create";
+import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'node:crypto'
+import { rateLimit, requestIp } from '@/lib/rate-limit'
 
-export async function POST(req: NextRequest) {
-    const data = await req.json()
+export async function GET(request: NextRequest) {
+    const limit = rateLimit(requestIp(request))
+    if (!limit.allowed) {
+        return NextResponse.json(
+            { error: 'Too many requests' },
+            { status: 429, headers: { 'Retry-After': Math.ceil(limit.retryAfterMs / 1000).toString() } }
+        )
+    }
 
-    const html = await render(CreateParishMail(data))
-
-    const result = await directus.request(() => ({
-        path: '/notifier/mail',
-        method: 'POST',
-        body: JSON.stringify({
-            to: process.env.ADMIN_EMAIL,
-            subject: 'Nouvelle paroisse ' + data.name,
-            html,
-            text: JSON.stringify(data),
-        })
-    }))
-
-    return NextResponse.json(result)
+    const token = randomBytes(32).toString('base64url')
+    return NextResponse.json({
+        token
+    })
 }

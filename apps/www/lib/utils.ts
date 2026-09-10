@@ -1,3 +1,5 @@
+export { cn } from "cn"
+
 export const LG_COUNTRIES = {
     fr: 'fr_FR',
     mg: 'mg_MG',

@@ -5,8 +5,8 @@ import { Search, LogIn, Info } from "lucide-react"
 import { useEffect, useState, type MouseEvent } from 'react'
 import Fuse from 'fuse.js'
 import Image from "next/image"
-import Link from "next/link"
-import { session } from '@/components/database'
+import { Link } from '@/i18n/navigation'
+import { session } from '@/lib/database'
 import { motion, AnimatePresence } from 'motion/react'
 import { trackEvent } from "@/lib/umami"
 
@@ -30,7 +30,9 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
     }
 
     useEffect(() => {
-        session('parish', keyword)
+        session('parish-draft', {
+            name: keyword
+        })
     }, [keyword])
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement>, parish: any) => {
@@ -50,12 +52,12 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
             <input type="search" placeholder={__(`Karohy ato ny Eglizinao`)} onChange={searchChanged} className="focus:outline-2 pl-12 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-11/12 md:w-full bg-slate-300/10 dark:bg-zinc-800 my-4 py-2 px-4 hover:shadow-lg transition duration-400" />
             <Search className="absolute top-6 left-4 text-slate-400" />
         </div>
-        {(items.length == 0 || keyword.length > 0) && <Link transitionTypes={['forward']} href={`/parishes/create`} className="float-left btn-add-parish mb-4 mr-4 shadow-lg block p-4 text-center text-white text-sm italic font-bold"><Info className="inline text-white mr-1" /> {__(`Azonao faritana eto ny Eglizinao raha tsy hita`)}</Link>}
+        {(items.length == 0 || keyword.length > 0) && <Link transitionTypes={['forward']} href="/parishes/create" className="float-left btn-add-parish mb-4 mr-4 shadow-lg block p-4 text-center text-white text-sm italic font-bold"><Info className="inline text-white mr-1" /> {__(`Azonao faritana eto ny Eglizinao raha tsy hita`)}</Link>}
         {items.length > 0 && <div className="float-right aspect-5/2 max-h-70">
             <h2 className="mb-2 uppercase text-gray-500 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
             <motion.ul layout className="md:grid grid-cols-4 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
                 <AnimatePresence mode="popLayout" initial={false}>
-                    <Link transitionTypes={['forward']} href={`/parishes/${items[0].slug}/login`} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
+                    <Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: items[0].slug } }} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
                         <div className="relative md:absolute w-full bottom-0 grow md:bg-slate-600/80 min-h-30 md:text-white flex flex-col justify-between p-4">
                             <div>{__(`Kristianina_en_ligne`, { n: 3000 })}</div>
                             <div>
@@ -76,7 +78,7 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
                         transition={{
                             layout: { type: "spring", stiffness: 350, damping: 30 },
                             opacity: { duration: 0.15 },
-                        }}><Link transitionTypes={['forward']} href={`/parishes/${parish.slug}/login`} onClick={(event)=>handleClick(event, parish)} className="relative h-full cursor-pointer md:bg-slate-600/10 hover:shadow-lg transition duration-400 shadow-sm min-h-30">
+                        }}><Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: parish.slug } }} onClick={(event)=>handleClick(event, parish)} className="relative h-full cursor-pointer md:bg-slate-600/10 hover:shadow-lg transition duration-400 shadow-sm min-h-30">
                             <div className="bg-slate-500 h-full relative">
                                 {parish.picture && <Image className="h-auto w-auto" src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture.id}`} width={parish.picture.width} height={parish.picture.height} alt={parish.name} />}
                             </div>

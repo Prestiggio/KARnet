@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { oneTap } from "better-auth/plugins";
 import dotenv from "dotenv";
 import path from "path";
 import { Pool } from "pg";
@@ -12,16 +13,16 @@ dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 // Generate the client secret JWT required for 'Sign in with Apple'.
 async function generateAppleClientSecret(clientId: string, teamId: string, keyId: string, privateKey: string) {
-    const key = await importPKCS8(privateKey, "ES256");
-    const now = Math.floor(Date.now() / 1000);
-    return new SignJWT({})
-        .setProtectedHeader({ alg: "ES256", kid: keyId })
-        .setIssuer(teamId)
-        .setSubject(clientId)
-        .setAudience("https://appleid.apple.com")
-        .setIssuedAt(now)
-        .setExpirationTime(now + 180 * 24 * 60 * 60)
-        .sign(key);
+  const key = await importPKCS8(privateKey, "ES256");
+  const now = Math.floor(Date.now() / 1000);
+  return new SignJWT({})
+    .setProtectedHeader({ alg: "ES256", kid: keyId })
+    .setIssuer(teamId)
+    .setSubject(clientId)
+    .setAudience("https://appleid.apple.com")
+    .setIssuedAt(now)
+    .setExpirationTime(now + 180 * 24 * 60 * 60)
+    .sign(key);
 }
 
 export const auth = betterAuth({
@@ -55,17 +56,20 @@ export const auth = betterAuth({
       clientId: process.env.LINKEDIN_CLIENT_ID as string,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
     },*/
-    apple: async () => ({ 
-        clientId: process.env.APPLE_CLIENT_ID as string, 
-        clientSecret: await generateAppleClientSecret(
-            process.env.APPLE_CLIENT_ID!, 
-            process.env.APPLE_TEAM_ID!, 
-            process.env.APPLE_KEY_ID!, 
-            process.env.APPLE_PRIVATE_KEY!, 
-        ), 
-        // Optional
-        appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string, 
+    apple: async () => ({
+      clientId: process.env.APPLE_CLIENT_ID as string,
+      clientSecret: await generateAppleClientSecret(
+        process.env.APPLE_CLIENT_ID!,
+        process.env.APPLE_TEAM_ID!,
+        process.env.APPLE_KEY_ID!,
+        process.env.APPLE_PRIVATE_KEY!,
+      ),
+      // Optional
+      appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string,
     })
   },
   trustedOrigins: ["https://appleid.apple.com"],
+  plugins: [oneTap({
+    clientId: process.env.GOOGLE_CLIENT_ID as string,
+  })],
 })

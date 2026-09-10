@@ -4,9 +4,10 @@ import type { Metadata } from "next"
 import { getPage } from "@/lib/entities/pages";
 import { LG_COUNTRIES, MGMoment } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from '@/i18n/navigation'
 import { ViewTransition } from "react";
 import moment from 'moment'
+import LoginForm from "@/components/auth/login";
 
 moment.locale('mg', MGMoment)
 
@@ -92,7 +93,7 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
 
     return <div className="grow flex flex-col">
         <header className="px-5 py-3 border-b border-1 border-zinc-200">
-            <Link href={`/`} transitionTypes={['back']} className="text-barlow flex items-center gap-3">
+            <Link href={`/`} transitionTypes={['back']} className="font-barlow flex items-center gap-3">
                 <Image src={`/logo.webp`} width={480} height={480} alt={__(`Katolika, Eglizy en ligne`)} className="w-7 h-7" />
                 KATOLIKA
             </Link>
@@ -106,12 +107,12 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
                     <Image src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture?.id}`} width={parish.picture?.width} height={parish.picture?.height} alt={parish.name} className="h-full object-cover" />
                 </div>
                 <div className="md:w-6/12 p-6">
-                    <span className="uppercase text-zinc-500 text-barlow tracking-widest">{diocese?.name}</span>
+                    <span className="uppercase text-zinc-500 font-barlow tracking-widest">{diocese?.name}</span>
                     <div className="text-4xl md:text-5xl font-barlow font-[400]">
                         {parish.name}
                     </div>
-                    <div className="min-h-50 prose dark:prose-invert my-8 max-w-none">
-                        
+                    <div className="min-h-50 my-8">
+                        <LoginForm/>
                     </div>
                 </div>
                 <div className="md:w-3/12 p-6">
