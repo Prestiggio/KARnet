@@ -8,12 +8,13 @@ export default function SignInButton() {
 
     useEffect(() => {
         if (buttonRef.current) {
+            const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
             authClient.oneTap({
                 button: {
                     container: buttonRef.current,
                     config: {
                         type: 'standard',
-                        theme: "outline"
+                        theme: isDark ? "filled_black" : "outline"
                     }
                 }
             });
