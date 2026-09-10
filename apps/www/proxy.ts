@@ -1,8 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { getSessionCookie } from "better-auth/cookies";
 import { match } from "next/dist/compiled/path-to-regexp";
 
 const intlMiddleware = createMiddleware(routing);
@@ -47,11 +46,9 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isProtected(request.nextUrl.pathname)) {
-    const session = await auth.api.getSession({
-      headers: await headers()
-    })
+    const sessionCookie = getSessionCookie(request);
 
-    if (!session) {
+    if (!sessionCookie) {
       const url = request.nextUrl.clone();
       url.pathname = "/sign-in";
       url.searchParams.set("redirect", pathname);

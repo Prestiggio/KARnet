@@ -1,9 +1,14 @@
 import { betterAuth } from "better-auth";
-import { oneTap } from "better-auth/plugins";
+import { oneTap, emailOTP } from "better-auth/plugins";
 import dotenv from "dotenv";
 import path from "path";
 import { Pool } from "pg";
 import { importPKCS8, SignJWT } from "jose";
+import mailer from "./mailer";
+import { getTranslations } from "next-intl/server";
+import { render } from '@react-email/render';
+import LoginOtpMail from "@/emails/login/otp";
+import { findUserByEmail } from "@/lib/entities/user";
 
 // Combine the app-local .env with the monorepo root .env (shared DB/service
 // credentials). dotenv.config() never overrides an already-set var, so the
@@ -69,7 +74,29 @@ export const auth = betterAuth({
     })
   },
   trustedOrigins: ["https://appleid.apple.com"],
-  plugins: [oneTap({
-    clientId: process.env.GOOGLE_CLIENT_ID as string,
-  })],
+  plugins: [
+    oneTap({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        const __ = await getTranslations()
+        if (type === "sign-in") {
+          const {fullname} = await findUserByEmail(email)
+          const text = __(`Votre code est ${otp}`)
+          const html = await render(LoginOtpMail({otp, fullname}))
+          await mailer({
+            to: email,
+            subject: __(`Votre code à usage unique`),
+            html,
+            text
+          })
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
+      },
+    })
+  ],
 })
