@@ -48,13 +48,13 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
     };
 
     return <>
-        <div className="sticky top-0 z-3 md:relative bg-yellow-50 dark:bg-zinc-800 md:bg-transparent">
-            <input type="search" placeholder={__(`Karohy ato ny Eglizinao`)} onChange={searchChanged} className="focus:outline-2 pl-12 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-11/12 md:w-full bg-slate-300/10 dark:bg-zinc-800 my-4 py-2 px-4 hover:shadow-lg transition duration-400" />
-            <Search className="absolute top-6 left-4 text-slate-400" />
+        <div className="sticky top-0 z-3 md:relative bg-yellow-50 dark:bg-zinc-700 dark:md:bg-transparent md:bg-transparent">
+            <input type="search" placeholder={__(`Karohy ato ny Eglizinao`)} onChange={searchChanged} className="focus:outline-2 pl-12 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-300 dark:focus:outline-slate-500 shadow-sm w-11/12 md:w-full bg-slate-300/10 dark:bg-zinc-800 my-4 py-2 px-4 hover:shadow-lg transition duration-400" />
+            <Search className="absolute top-6 left-4 text-slate-400 dark:text-slate-100" />
         </div>
         {(items.length == 0 || keyword.length > 0) && <Link transitionTypes={['forward']} href="/parishes/create" className="float-left btn-add-parish mb-4 mr-4 shadow-lg block p-4 text-center text-white text-sm italic font-bold"><Info className="inline text-white mr-1" /> {__(`Azonao faritana eto ny Eglizinao raha tsy hita`)}</Link>}
         {items.length > 0 && <div className="float-right aspect-5/2 max-h-70">
-            <h2 className="mb-2 uppercase text-gray-500 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
+            <h2 className="mb-2 mt-2 md:mt-0 uppercase text-gray-500 dark:text-gray-100 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
             <motion.ul layout className="md:grid grid-cols-4 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
                 <AnimatePresence mode="popLayout" initial={false}>
                     <Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: items[0].slug } }} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
