@@ -40,9 +40,6 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = "/sign-in";
       url.searchParams.set("redirect", pathname);
-      const matcher = match('/parishes/create/:token', { decode: decodeURIComponent })
-      if(matcher(pathname) !== false)
-        url.searchParams.set("context", "parish_create");
       return NextResponse.redirect(new URL(url));
     }
   }

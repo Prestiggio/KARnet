@@ -6,12 +6,16 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import GoogleSignIn from './google'
 import { useSearchParams } from 'next/navigation'
+import { match } from "next/dist/compiled/path-to-regexp";
 
 export default function LoginForm() {
     const __ = useTranslations()
     const searchParams = useSearchParams()
     const redirect = searchParams.get("redirect");
-    const context = searchParams.get("context")
+    const matcher = match('/parishes/create/:token', { decode: decodeURIComponent })
+    let context = ''
+    if(redirect && matcher(redirect) !== false)
+        context = "parish_create"
 
     return <div className='space-y-4'>
         <div className='text-center'>
