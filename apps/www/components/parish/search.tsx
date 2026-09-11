@@ -53,16 +53,15 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
             <Search className="absolute top-6 left-4 text-slate-400 dark:text-slate-100" />
         </div>
         {(items.length == 0 || keyword.length > 0) && <Link transitionTypes={['forward']} href="/parishes/create" className="float-left btn-add-parish mb-4 mr-4 shadow-lg block p-4 text-center text-white text-sm italic font-bold"><Info className="inline text-white mr-1" /> {__(`Azonao faritana eto ny Eglizinao raha tsy hita`)}</Link>}
-        {items.length > 0 && <div className="float-right aspect-5/2 max-h-70">
+        {items.length > 0 && <div className="float-right aspect-8/2 max-h-32">
             <h2 className="mb-2 mt-2 md:mt-0 uppercase text-gray-500 dark:text-gray-100 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
-            <motion.ul layout className="md:grid grid-cols-4 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
+            <motion.ul layout className="md:grid grid-cols-6 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
                 <AnimatePresence mode="popLayout" initial={false}>
                     <Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: items[0].slug } }} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
-                        <div className="relative md:absolute w-full bottom-0 grow md:bg-slate-600/80 min-h-30 md:text-white flex flex-col justify-between p-4">
-                            <div>{__(`Kristianina_en_ligne`, { n: 3000 })}</div>
+                        <div className="relative md:absolute w-full bottom-0 grow md:bg-slate-600/80 min-h-20 md:text-white flex flex-col justify-between p-3">
+                            <div className="text-xs">{__(`Kristianina_en_ligne`, { n: 3000 })}</div>
                             <div>
-                                <div className="text-2xl">{items[0].name}</div>
-                                <div className="text-xs">{items[0].ancestors}</div>
+                                <div className="text-sm/5">{items[0].name}</div>
                             </div>
                             <div className="bg-gray-700 p-3 absolute right-0 bottom-0 text-gray-400">
                                 <LogIn />
@@ -72,21 +71,21 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
                             {items[0].picture && <Image className="h-auto w-auto" src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${items[0].picture.id}`} width={items[0].picture.width} height={items[0].picture.height} alt={items[0].name} />}
                         </div>
                     </Link>
-                    {items.slice(1, 3).map(parish => <motion.li key={parish.id} layout initial={{ opacity: 0, scale: 0.9 }}
+                    {items.slice(1, 5).map(parish => <motion.li key={parish.id} layout initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{
                             layout: { type: "spring", stiffness: 350, damping: 30 },
                             opacity: { duration: 0.15 },
                         }}><Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: parish.slug } }} onClick={(event)=>handleClick(event, parish)} className="relative h-full cursor-pointer md:bg-slate-600/10 hover:shadow-lg transition duration-400 shadow-sm min-h-30">
-                            <div className="bg-slate-500 h-full relative">
-                                {parish.picture && <Image className="h-auto w-auto" src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture.id}`} width={parish.picture.width} height={parish.picture.height} alt={parish.name} />}
+                            <div className="bg-slate-500 h-full relative flex flex-col justify-center">
+                                {parish.picture && <Image className="h-full object-cover" src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture.id}`} width={parish.picture.width} height={parish.picture.height} alt={parish.name} />}
                             </div>
                             <div className="absolute w-full bottom-0 left-0">
                                 <div className="bg-gray-700 p-1 text-gray-400 text-xs float-right">
                                     <LogIn />
                                 </div>
-                                <div className="clear-right text-lg md:text-sm bg-slate-800/65 text-white p-4">
+                                <div className="clear-right text-lg md:text-xs/3 bg-slate-800/65 text-white p-2 min-h-20">
                                     {parish.name}
                                 </div>
                             </div>
