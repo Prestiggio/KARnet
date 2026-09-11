@@ -73,7 +73,7 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
         {({ zoomToElement, resetTransform }) => (
             <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2">
-                    <div className={`text-xl ${error ? 'text-red-600 dark:text-red-300': 'text-zinc-700 dark:text-zinc-200'} text-center md:hidden mb-8 uppercase font-barlow font-200`}>{selectedDiocese?.name ?? __(`Tondroy ny diosezy`)}</div>
+                    <div className={`text-xl ${error ? 'text-red-600 dark:text-red-300': 'text-zinc-700 dark:text-zinc-200'} text-center md:hidden mb-8 uppercase font-barlow font-200`}>{selectedDiocese?.name ?? __(`Tondroy eo amin'ny saritany ny diosezy`)}</div>
                     <TransformComponent wrapperClass="w-full! md:w-auto! md:h-96!" contentClass="w-full! md:w-auto! md:h-96! md:min-w-1/2!">
                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" viewBox="0 0 1200 1200">
                             {dioceseRegions.map((r, i) => (

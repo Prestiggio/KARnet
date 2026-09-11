@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { oneTap, emailOTP } from "better-auth/plugins";
+import { nextCookies } from "better-auth/next-js";
 import dotenv from "dotenv";
 import path from "path";
 import { Pool } from "pg";
@@ -9,7 +10,6 @@ import { createTranslator } from "next-intl";
 import { render } from '@react-email/render';
 import LoginOtpMail from "@/emails/login/otp";
 import { findUserByEmail } from "@/lib/entities/user";
-import { routing } from "@/i18n/routing";
 
 // Combine the app-local .env with the monorepo root .env (shared DB/service
 // credentials). dotenv.config() never overrides an already-set var, so the
@@ -78,7 +78,12 @@ export const auth = betterAuth({
       appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string,
     })
   },
-  trustedOrigins: ["https://appleid.apple.com"],
+  trustedOrigins: [
+    "https://appleid.apple.com",
+    ...(process.env.NODE_ENV !== "production"
+      ? ["http://localhost:3000", "http://127.0.0.1:3000"]
+      : []),
+  ],
   plugins: [
     oneTap({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -107,6 +112,7 @@ export const auth = betterAuth({
           // Send the OTP for password reset
         }
       },
-    })
+    }),
+    nextCookies(),
   ],
 })

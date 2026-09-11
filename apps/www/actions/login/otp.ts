@@ -3,7 +3,7 @@
 import { Pool, Result } from "pg";
 import { auth } from "@/lib/auth";
 
-export default async function OTPLogin(formData: FormData) {
+export default async function OTPLogin(prevState: { sent: boolean }, formData: FormData) {
 
     const email = formData.get('email') as string
     const fullname = formData.get('fullname') as string
@@ -31,10 +31,45 @@ export default async function OTPLogin(formData: FormData) {
         await pool.query(`UPDATE public.email_leads SET fullname = $2, locale = $3 WHERE email = $1`, values)
     }
 
-    await auth.api.sendVerificationOTP({
-        body: {
-            email,
-            type: 'sign-in'
+    try {
+        const sent = await auth.api.sendVerificationOTP({
+            body: {
+                email,
+                type: 'sign-in'
+            }
+        })
+
+        return {
+            sent: sent.success
         }
-    })
+    }
+    catch (e) {
+        return {
+            sent: false
+        }
+    }
+}
+
+export async function validateOTP(user: {email: string, name: string}, prevState: {success: boolean}, formData: FormData) {
+    const otp = formData.get('otp') as string
+
+    try {
+        await auth.api.signInEmailOTP({
+            body: {
+                email: user.email,
+                otp,
+                name: user.name,
+                image: "https://example.com/image.png",
+            },
+        })
+
+        return {
+            success: true
+        }
+    }
+    catch (e) {
+        return {
+            success: false
+        }
+    }
 }

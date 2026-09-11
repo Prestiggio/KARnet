@@ -27,5 +27,6 @@
     "'zay": "OK",
     "Ampidirina": "Enter",
     "Indro_code": "Here is your OTP code : {otp}",
-    "Inty ny code idiranao": "Your code for signing in"
+    "Inty ny code idiranao": "Your code for signing in",
+    "Diso ilay kaody nampidirinao": "The code you entered is incorrect"
 }

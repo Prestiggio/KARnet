@@ -53,7 +53,7 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
             <Search className="absolute top-6 left-4 text-slate-400 dark:text-slate-100" />
         </div>
         {(items.length == 0 || keyword.length > 0) && <Link transitionTypes={['forward']} href="/parishes/create" className="float-left btn-add-parish mb-4 mr-4 shadow-lg block p-4 text-center text-white text-sm italic font-bold"><Info className="inline text-white mr-1" /> {__(`Azonao faritana eto ny Eglizinao raha tsy hita`)}</Link>}
-        {items.length > 0 && <div className="float-right aspect-8/2 max-h-32">
+        {items.length > 0 && <div className="float-right aspect-5/1 max-h-32">
             <h2 className="mb-2 mt-2 md:mt-0 uppercase text-gray-500 dark:text-gray-100 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
             <motion.ul layout className="md:grid grid-cols-6 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
                 <AnimatePresence mode="popLayout" initial={false}>

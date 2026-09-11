@@ -27,5 +27,7 @@
     "'zay": "OK",
     "Ampidirina": "Entrer",
     "Indro_code": "Voici votre code OTP : {otp}",
-    "Inty ny code idiranao": "Votre code de connexion"
+    "Inty ny code idiranao": "Votre code de connexion",
+    "Nalefanay mail any aminao ny code": "Nous vous avons transmis le code par email",
+    "Diso ilay kaody nampidirinao": "Le code que vous avez saisi est incorrect"
 }
