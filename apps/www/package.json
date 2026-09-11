@@ -6,6 +6,9 @@
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
     "start": "next start",
+    "migrate:create": "node-pg-migrate create",
+    "migrate:up": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
     "lint": "eslint"
   },
   "dependencies": {
@@ -55,6 +58,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
+    "node-pg-migrate": "^9.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

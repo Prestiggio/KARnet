@@ -25,5 +25,7 @@
     "Nodimandry ny herinandro lasa teo": "Décès la semaine dernière",
     "Fandaharam-potoanan'ny herinandro": "Rendez-vous de cette semaine",
     "'zay": "OK",
-    "Ampidirina": "Entrer"
+    "Ampidirina": "Entrer",
+    "Indro_code": "Voici votre code OTP : {otp}",
+    "Inty ny code idiranao": "Votre code de connexion"
 }

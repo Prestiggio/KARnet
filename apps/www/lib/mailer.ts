@@ -2,6 +2,8 @@ import directus from "@/lib/directus";
 import directusLocalMailer from "@/lib/directus-local-mailer";
 
 type MailObject = {
+    fromName?: string,
+    from?: string,
     to: string,
     subject: string,
     html: string,
@@ -14,6 +16,10 @@ export default async function(mail: MailObject) {
     return await directusInstance.request(() => ({
         path: '/notifier/mail',
         method: 'POST',
-        body: JSON.stringify(mail)
+        body: JSON.stringify({
+            ...mail,
+            from: mail.from ?? 'admin@katolika.net',
+            fromName: mail.fromName ?? 'KATOLIKA APOSTOLIKA ROMANA NETWORK'
+        })
     }))
 }

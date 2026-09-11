@@ -18,7 +18,6 @@ export default function SignInButton() {
                     }
                 }
             });
-            authClient.oneTap()
         }
     }, []);
 

@@ -17,7 +17,7 @@ export default defineEndpoint((router, {services, getSchema, database}) => {
 			return res.status(403).json({ error: 'Forbidden' });
 		}
 
-		const { to, subject, html, text } = _req.body
+		const { from, fromName, to, subject, html, text } = _req.body
 
 		const mail = new MailService({
 			schema: await getSchema(),
@@ -25,7 +25,13 @@ export default defineEndpoint((router, {services, getSchema, database}) => {
 			accountability: accountability,
 		})
 
-		const response = await mail.send({ to, subject, html, text })
+		const response = await mail.send({
+			from: fromName ? { name: fromName, address: from } : from,
+			to,
+			subject,
+			html,
+			text,
+		})
 
 		return res.status(200).json({
 			response

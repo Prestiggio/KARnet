@@ -5,10 +5,11 @@ import path from "path";
 import { Pool } from "pg";
 import { importPKCS8, SignJWT } from "jose";
 import mailer from "./mailer";
-import { getTranslations } from "next-intl/server";
+import { createTranslator } from "next-intl";
 import { render } from '@react-email/render';
 import LoginOtpMail from "@/emails/login/otp";
 import { findUserByEmail } from "@/lib/entities/user";
+import { routing } from "@/i18n/routing";
 
 // Combine the app-local .env with the monorepo root .env (shared DB/service
 // credentials). dotenv.config() never overrides an already-set var, so the
@@ -41,7 +42,7 @@ export const auth = betterAuth({
     }
   },
   database: new Pool({
-    connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
+    connectionString: process.env.DATABASE_URL
   }),
   emailAndPassword: {
     enabled: true,
@@ -56,6 +57,10 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID as string,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
     },
     /*linkedin: {
       clientId: process.env.LINKEDIN_CLIENT_ID as string,
@@ -80,14 +85,19 @@ export const auth = betterAuth({
     }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        const __ = await getTranslations()
         if (type === "sign-in") {
-          const {fullname} = await findUserByEmail(email)
-          const text = __(`Votre code est ${otp}`)
-          const html = await render(LoginOtpMail({otp, fullname}))
+          const lead = await findUserByEmail(email)
+          // This runs as a Better Auth background task, detached from the request,
+          // so next-intl's request-scoped locale detection (next/root-params) isn't
+          // available here. Indicate the locale explicitly and build the translator
+          // directly from the messages file instead of going through getTranslations().
+          const messages = (await import(`@/messages/${lead.locale}.json`)).default;
+          const __ = createTranslator({ locale: lead.locale, messages });
+          const text = __(`Indro_code`, {otp})
+          const html = await render(LoginOtpMail({ ...lead, otp }))
           await mailer({
             to: email,
-            subject: __(`Votre code à usage unique`),
+            subject: __(`Inty ny code idiranao`),
             html,
             text
           })

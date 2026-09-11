@@ -1,19 +1,22 @@
 'use client'
 
 import { Mail, Smartphone, User2 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import GoogleSignIn from './google'
 import { useSearchParams } from 'next/navigation'
 import { match } from "next/dist/compiled/path-to-regexp";
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '@/lib/umami'
+import OTPLogin from '@/actions/login/otp'
+import { session } from '@/lib/database'
 
 export default function LoginForm() {
     const __ = useTranslations()
     const searchParams = useSearchParams()
     const redirect = searchParams.get("redirect");
+    const locale = useLocale()
 
     const [providers, setProviders] = useState<string[]>([
         'google',
@@ -53,7 +56,11 @@ export default function LoginForm() {
         }
     }
 
-    return <form className='space-y-4'>
+    useEffect(()=>{
+        session('redirect', {redirect})
+    }, [])
+
+    return <form className='space-y-4' action={OTPLogin}>
         <div className='text-center'>
             <Link href={`/`}><Image src={`/logo.webp`} width={1024} height={1024} className="h-12 w-12 mx-auto" alt={__(`Katolika, Eglizy en ligne`)}/></Link>
         </div>
@@ -78,9 +85,10 @@ export default function LoginForm() {
             </div>}
         </div>
         <div className='flex focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-            <input type='text' name='fullname' placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1'/>
+            <input type='text' name='fullname' required placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1'/>
             <User2 className='inline-block text-slate-500'/>
         </div>
+        <input type='hidden' name='locale' value={locale}/>
         <button type='submit' onClick={handleSubmitClick} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400'>
             {__(`'zay`)}
         </button>

@@ -1,13 +1,9 @@
-import { Pool } from "pg";
-
-const pool = new Pool({
-    connectionString: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
-})
+import { Pool, Result } from "pg";
 
 export async function findUserByEmail(email: string) {
-    const res = await pool.query('SELECT NOW()')
-    await pool.end()
-    return {
-        fullname: 'rakoto'
-    }
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL
+    })
+    const res: Result = await pool.query(`SELECT * FROM public.email_leads WHERE email = $1`, [email])
+    return res.rows[0]
 }
