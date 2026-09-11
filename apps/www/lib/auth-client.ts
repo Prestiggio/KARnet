@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react"
-import { inferAdditionalFields, oneTapClient } from "better-auth/client/plugins"
+import { inferAdditionalFields, oneTapClient, emailOTPClient } from "better-auth/client/plugins"
 import type { auth } from "./auth"
 
 export const authClient = createAuthClient({
@@ -19,6 +19,7 @@ export const authClient = createAuthClient({
                 baseDelay: 1000,   // Base delay in ms (default: 1000)
                 maxAttempts: 5     // Maximum number of attempts before triggering onPromptNotification (default: 5)
             }
-        })
+        }),
+        emailOTPClient()
     ]
 })

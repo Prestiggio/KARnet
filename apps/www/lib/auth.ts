@@ -92,6 +92,7 @@ export const auth = betterAuth({
       async sendVerificationOTP({ email, otp, type }) {
         if (type === "sign-in") {
           const lead = await findUserByEmail(email)
+          if (!lead) return
           // This runs as a Better Auth background task, detached from the request,
           // so next-intl's request-scoped locale detection (next/root-params) isn't
           // available here. Indicate the locale explicitly and build the translator

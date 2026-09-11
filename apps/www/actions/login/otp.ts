@@ -1,9 +1,29 @@
 'use server'
 
 import { Pool, Result } from "pg";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { checkCaptcha } from "@/lib/withRecaptcha";
+import { rateLimit, ipFromHeaders } from "@/lib/rate-limit";
 
 export default async function OTPLogin(prevState: { sent: boolean }, formData: FormData) {
+    const ip = ipFromHeaders(await headers())
+
+    if (!rateLimit(`otp-send:${ip}`).allowed) {
+        //lie to me
+        return {
+            sent: true
+        }
+    }
+
+    let antibot = formData.get('antibot')
+
+    if (!await checkCaptcha(antibot)) {
+        //lie to me
+        return {
+            sent: true
+        }
+    }
 
     const email = formData.get('email') as string
     const fullname = formData.get('fullname') as string
@@ -50,7 +70,22 @@ export default async function OTPLogin(prevState: { sent: boolean }, formData: F
     }
 }
 
-export async function validateOTP(user: {email: string, name: string}, prevState: {success: boolean}, formData: FormData) {
+export async function validateOTP(user: { email: string, name: string, antibot: string }, prevState: { success: boolean }, formData: FormData) {
+    const ip = ipFromHeaders(await headers())
+
+    if (!rateLimit(`otp-validate:${ip}`).allowed) {
+        return {
+            success: false
+        }
+    }
+
+    if (!await checkCaptcha(user.antibot)) {
+        //lie to me
+        return {
+            success: true
+        }
+    }
+
     const otp = formData.get('otp') as string
 
     try {

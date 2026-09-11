@@ -3,7 +3,6 @@
 import { session } from '@/lib/database'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
 import { SquareArrowOutUpRight } from 'lucide-react'
 import Antibot from '@/components/antibot'
 import { Link } from '@/i18n/navigation'

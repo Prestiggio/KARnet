@@ -31,10 +31,14 @@ export function rateLimit(key: string): { allowed: true } | { allowed: false; re
     return { allowed: true }
 }
 
-export function requestIp(request: Request): string {
-    const forwarded = request.headers.get('x-forwarded-for')
+export function ipFromHeaders(headersList: Headers): string {
+    const forwarded = headersList.get('x-forwarded-for')
     if (forwarded) {
         return forwarded.split(',')[0].trim()
     }
-    return request.headers.get('x-real-ip') ?? 'unknown'
+    return headersList.get('x-real-ip') ?? 'unknown'
+}
+
+export function requestIp(request: Request): string {
+    return ipFromHeaders(request.headers)
 }
