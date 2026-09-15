@@ -6,6 +6,7 @@ import { ViewTransition } from "react";
 export default async function CreateParish() {
 
     const dioceses = await directus.request(readItems('organizations', {
+        fields: ['id', 'name'],
         filter: {
             type: {
                 slug: {

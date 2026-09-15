@@ -1,5 +1,11 @@
 # KARnet
 
+## Application Factory
+
+Le [serveur MCP local](tools/application-factory/README.md) fournit une première
+inspection du code versionné et un catalogue de modules candidats à l'extraction.
+Voir l'[analyse et la trajectoire d'architecture](docs/application-factory/architecture.md).
+
 ## Prérequis
 
 - Docker

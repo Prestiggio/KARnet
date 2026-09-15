@@ -41,7 +41,7 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
     const [selected, toggleSelected] = useState('')
     const [hovered, setHovered] = useState('')
     const [error, setError] = useState(false)
-    const [selectedDiocese, selectDiocese] = useState<any>(null)
+    const [selectedDiocese, selectDiocese] = useState<any>({})
     const selectedDiocese_ref = useRef(selectedDiocese)
     const { handleChange, onValidate } = useForm('parish-draft', {
         diocese: ''
@@ -49,7 +49,9 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
 
     useEffect(()=>{
         const diocese = dioceses.find(it=>it.id==selected)
-        selectDiocese(diocese)
+        if(diocese) {
+            selectDiocese(diocese)
+        }
     }, [selected])
 
     useEffect(()=>{
@@ -93,6 +95,7 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
                             ))}
                         </svg>
                     </TransformComponent>
+                    <input type="hidden" name="diocese" value={JSON.stringify(selectedDiocese)}/>
                 </div>
                 <div className="hidden md:block md:w-1/2">
                     {dioceses.map((r, i) => (<button onMouseOver={()=>setHovered(r.id)} className={`shadow transition duration-400 text-sm px-4 m-2 ${hovered == r.id ? 'bg-yellow-200':(selected == r.id ? 'bg-yellow-300' : null)}`} key={`btn-${r.id}-${i}`} type="button" onClick={() => {

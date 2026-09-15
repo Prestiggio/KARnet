@@ -1,7 +1,7 @@
 // emails/rappel-messe.tsx
-import { Body, Container, Head, Heading, Html, Section, Tailwind, Text } from '@react-email/components'
+import { Body, Container, Head, Heading, Html, Section, Tailwind, Text, Img } from '@react-email/components'
 
-export default function CreateParishMail({ name, patron, district, diocese }: { name: string; patron: string, district: string, diocese: string }) {
+export default function CreateParishMail({ name, patron, token, diocese, author }: { name: string; patron: string, token: string, diocese: string, author: any }) {
     return (
         <Html lang="fr">
             <Head />
@@ -28,8 +28,25 @@ export default function CreateParishMail({ name, patron, district, diocese }: { 
                                         <td>{diocese}</td>
                                     </tr>
                                     <tr>
-                                        <th>District</th>
-                                        <td>{district}</td>
+                                        <th>ID Ticket</th>
+                                        <td>{token}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <Text>Demande envoyée par:</Text>
+                            <table className='w-full bg-lime-100'>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td><Img src={author.user?.image}/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nom:</td>
+                                        <td>{author.user?.name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td>{author.user?.email}</td>
                                     </tr>
                                 </tbody>
                             </table>

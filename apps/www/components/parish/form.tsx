@@ -34,21 +34,26 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
         handleChange(field, value)
     }
 
-    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-        if(!validate()) {
-            return
-        }
-        const data = Object.fromEntries(new FormData(e.currentTarget))
+    async function save(data: any) {
         const [response] = await Promise.all([
             fetch(`/parishes/create/api`, {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
         ])
+        const { token } = await response.json()
+        await session(token, data)
+        return { token }
+    }
+
+    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        if(!validate()) {
+            return
+        }
+        const data = Object.fromEntries(new FormData(e.currentTarget))
         try {
-            const { token } = await response.json()
-            await session(token, data)
+            const { token } = await save(data)
             document.location.href = `/parishes/create/${token}`
         }
         catch(e) {
