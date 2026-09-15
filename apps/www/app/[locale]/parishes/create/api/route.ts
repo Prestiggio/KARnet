@@ -29,7 +29,7 @@ export const POST = withPendingSubmission(async (request: NextRequest, token: st
             render(CreateParishMail({...data, token, author: serversession})),
             await directus.request(createItem('tickets', {
                 token,
-                subject: 'parish_create',
+                subject: 'parish-draft',
                 content: { ...data, author: serversession}
             }))
         ])

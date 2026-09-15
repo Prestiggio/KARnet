@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { checkCaptcha } from "@/lib/withRecaptcha";
 import { rateLimit, ipFromHeaders } from "@/lib/rate-limit";
 
-export default async function OTPLogin(prevState: { sent: boolean }, formData: FormData) {
+export default async function OTPLogin(prevState: { sent: boolean, required?: string[] }, formData: FormData) {
     const ip = ipFromHeaders(await headers())
 
     if (!rateLimit(`otp-send:${ip}`).allowed) {
@@ -42,13 +42,17 @@ export default async function OTPLogin(prevState: { sent: boolean }, formData: F
     const [{ exists }] = resexists.rows
 
     if (!exists) {
+        if(!fullname) {
+            return {
+                required: ['fullname'],
+                sent: false
+            }
+        }
+
         await pool.query(`
             INSERT INTO public.email_leads (email, fullname, locale) VALUES ($1, $2, $3)
             ON CONFLICT (email)
             DO UPDATE SET fullname = $2, locale = $3`, values)
-    }
-    else {
-        await pool.query(`UPDATE public.email_leads SET fullname = $2, locale = $3 WHERE email = $1`, values)
     }
 
     try {

@@ -13,6 +13,9 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const nextConfig: NextConfig = {
+  experimental: {
+    authInterrupts: true,
+  },
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   allowedDevOrigins: ["localhost", "127.0.0.1", process.env.SITE_HOST as string],
   images: {
@@ -64,4 +67,3 @@ export default withSentryConfig(withNextIntl(withMDX(nextConfig)), {
     name: process.env.npm_package_version,
   },
 });
-

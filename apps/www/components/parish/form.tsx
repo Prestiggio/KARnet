@@ -1,6 +1,6 @@
 'use client'
 
-import { session } from '@/lib/database'
+import { session, session_delete } from '@/lib/database'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { SquareArrowOutUpRight } from 'lucide-react'
@@ -42,13 +42,19 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
             })
         ])
         const { token } = await response.json()
-        await session(token, data)
+        await Promise.all([
+            session(token, {
+                subject: 'parish-draft',
+                content: data
+            }),
+            session_delete('parish-draft')
+        ])
         return { token }
     }
 
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        if(!validate()) {
+        if (!validate()) {
             return
         }
         const data = Object.fromEntries(new FormData(e.currentTarget))
@@ -56,7 +62,7 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
             const { token } = await save(data)
             document.location.href = `/parishes/create/${token}`
         }
-        catch(e) {
+        catch (e) {
             document.location.href = '/'
         }
     }

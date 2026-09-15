@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation'
 import SearchForm from "@/components/parish/search";
 import { ViewTransition } from "react";
 import { getParishes } from "@/lib/entities/parishes";
+import Header from "@/components/header";
 
 
 export default async function Home() {
@@ -19,7 +20,7 @@ export default async function Home() {
 
   return (
     <div className="heaven min-h-screen relative flex flex-col justify-between">
-      <div></div>
+      <Header/>
       <div className="grow flex flex-row items-center justify-center">
         <ViewTransition
           name="login"

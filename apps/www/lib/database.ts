@@ -32,6 +32,10 @@ export async function session(key: string, data: any = undefined) {
   }
 }
 
+export async function values() {
+  return await sessionDb.contents.toArray();
+}
+
 export async function session_delete(key: string) {
   await sessionDb.contents.where({ key }).delete();
 }

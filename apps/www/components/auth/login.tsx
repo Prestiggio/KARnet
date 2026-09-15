@@ -12,7 +12,7 @@ import { match } from "next/dist/compiled/path-to-regexp";
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '@/lib/umami'
 import OTPLogin, { validateOTP } from '@/actions/login/otp'
-import { session } from '@/lib/database'
+import { session, values } from '@/lib/database'
 import OTPInput from '@/components/auth/OTPInput'
 import Antibot from '@/components/antibot'
 
@@ -140,6 +140,28 @@ export default function LoginForm() {
 
     }, [state.sent, showSpammed, allowRetry])
 
+    async function queueSubmissions() {
+        const all = await values()
+        let parish_creations: Promise<any>[] = []
+        for(const item of all) {
+            const pending = await session(item.key)
+            if(pending.subject === 'parish-draft') {
+                parish_creations.push(fetch(`/parishes/create/api`, {
+                    method: 'POST',
+                    body: JSON.stringify(pending.content)
+                }))
+            }
+        }
+        await Promise.all(parish_creations)
+        document.location.href = redirect ?? '/'
+    }
+
+    useEffect(()=>{
+        if(otpState.success) {
+            void queueSubmissions()
+        }
+    }, [otpState])
+
     const resendOTP = async () => {
         setAllowRetry(false)
         grecaptcha.enterprise.execute(process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA!, { action: 'submit' }).then(async function (recaptcha_token: any) {
@@ -153,7 +175,18 @@ export default function LoginForm() {
         });
     }
 
-    if (state.sent) {
+    if(!state.sent && state.required?.includes('fullname')) {
+        return <form className='space-y-4' action={formAction}>
+            <div className='flex focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
+                <input type='text' onChange={(e) => handleUserChange(e, 'name')} value={user.name} name='fullname' required placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1' />
+                <User2 className='inline-block text-slate-500' />
+            </div>
+            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
+                {__(`'zay`)}
+            </button>
+        </form>
+    }
+    else if (state.sent) {
         return <form action={otpFormAction}>
             <div className="text-center space-y-4 text-slate-600 dark:text-slate-100">
                 <div className="text-lg text-slate-800">
@@ -186,6 +219,9 @@ export default function LoginForm() {
             <Link href={`/`}><Image src={`/logo.webp`} width={1024} height={1024} className="h-12 w-12 mx-auto" alt={__(`Katolika, Eglizy en ligne`)} /></Link>
         </div>
         {context === 'parish_create' ? <div className='my-4 text-center text-slate-500 dark:text-slate-100'>
+            <div className='text-lg'>
+                {__(`Voaray ny fangatahanao hampiditra paroasy vaovao.`)}
+            </div>
             <div className='text-xl font-barlow font-bold'>
                 {__(`Hilazanay ianao rehefa ao fa,`)}
             </div>
@@ -204,10 +240,6 @@ export default function LoginForm() {
                 <input type='phone' name='phone' required placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
                 <Smartphone className='inline-block text-slate-500' />
             </div>}
-        </div>
-        <div className='flex focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-            <input type='text' onChange={(e) => handleUserChange(e, 'name')} value={user.name} name='fullname' required placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1' />
-            <User2 className='inline-block text-slate-500' />
         </div>
         <input type='hidden' name='locale' value={locale} />
         <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
