@@ -1,5 +1,11 @@
 {
     "Midira amin'ny paroasinao": "Midira amin'ny paroasinao !",
     "Kristianina_en_ligne": "Kristianina {n} en ligne",
-    "Indro_code": "Indro ny codenao : {otp}"
+    "Indro_code": "Indro ny codenao : {otp}",
+    "received": "voaray",
+    "review": "eo am-panamarinana azy",
+    "rejected": "nolavina",
+    "closed": "voatsara",
+    "cancelled": "najanona",
+    "status": "dingana"
 }

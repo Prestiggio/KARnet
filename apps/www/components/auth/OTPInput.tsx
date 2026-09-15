@@ -1,29 +1,32 @@
 'use client'
 
-import { useState } from "react"
 import gsap from 'gsap';
 import { useTranslations } from "next-intl";
+import { useForm } from "../form-context";
 
-export default function OTPInput({ onChange }: { onChange?: (value: string) => void }) {
+export default function OTPInput() {
     const __ = useTranslations()
-    const [otp, setOtp] = useState('')
+    const { formData, setFormData } = useForm('otp-form', {
+        otp: ''
+    })
 
     const handleTextChange = (e: any) => {
         const value = e.target.value
-        setOtp(value)
-        onChange?.(value)
+        setFormData({
+            otp: value
+        })
     }
 
     return <div className="relative">
         <table className="min-w-full shadow dark:border-1 dark:border-white/15">
             <tbody>
                 <tr className="divide-x text-3xl text-slate-600 dark:text-slate-50 font-barlow h-15 divide-gray-200 dark:divide-white/10">
-                    <td className="w-1/6">{otp[0] ?? 0}</td>
-                    <td className="w-1/6">{otp[1] ?? 0}</td>
-                    <td className="w-1/6">{otp[2] ?? 0}</td>
-                    <td className="w-1/6">{otp[3] ?? 0}</td>
-                    <td className="w-1/6">{otp[4] ?? 0}</td>
-                    <td className="w-1/6">{otp[5] ?? 0}</td>
+                    <td className="w-1/6">{formData.otp[0] ?? <span className="text-gray-200">0</span>}</td>
+                    <td className="w-1/6">{formData.otp[1] ?? <span className="text-gray-200">0</span>}</td>
+                    <td className="w-1/6">{formData.otp[2] ?? <span className="text-gray-200">0</span>}</td>
+                    <td className="w-1/6">{formData.otp[3] ?? <span className="text-gray-200">0</span>}</td>
+                    <td className="w-1/6">{formData.otp[4] ?? <span className="text-gray-200">0</span>}</td>
+                    <td className="w-1/6">{formData.otp[5] ?? <span className="text-gray-200">0</span>}</td>
                 </tr>
             </tbody>
         </table>

@@ -1,4 +1,6 @@
+import { getSessionCookie } from 'better-auth/cookies'
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from './auth'
 
 const RECAPTCHA_MIN_SCORE = 0.9
 
@@ -30,6 +32,14 @@ export function withRecaptcha<Args extends unknown[]>(
     handler: (req: NextRequest, ...args: Args) => Response | Promise<Response>
 ) {
     return async (req: NextRequest, ...args: Args) => {
+        const serversession = await auth.api.getSession({
+            headers: req.headers
+        })
+
+        if(serversession?.user) {
+            return handler(req, ...args)
+        }
+
         let antibot = null
         try {
             const formData = await req.clone().formData()

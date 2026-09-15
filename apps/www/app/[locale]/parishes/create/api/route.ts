@@ -3,7 +3,6 @@ import { withPendingSubmission } from '@/lib/withPendingSubmission'
 import { render } from '@react-email/render';
 import CreateParishMail from "@/emails/parishes/create";
 import mailer from "@/lib/mailer";
-import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import directus from '@/lib/directus';
 import { createItem } from '@directus/sdk';
@@ -16,7 +15,7 @@ export const POST = withPendingSubmission(async (request: NextRequest, token: st
 
     const [serversession, data] = await Promise.all([
         auth.api.getSession({
-            headers: await headers()
+            headers: request.headers
         }),
         request.json()
     ])
@@ -26,9 +25,9 @@ export const POST = withPendingSubmission(async (request: NextRequest, token: st
             html,
             ticket
         ] = await Promise.all([
-            render(CreateParishMail({...data, token, author: serversession})),
+            render(CreateParishMail({...data, author: serversession})),
             await directus.request(createItem('tickets', {
-                token,
+                token: data.token ?? token,
                 subject: 'parish-draft',
                 content: { ...data, author: serversession}
             }))
@@ -37,7 +36,7 @@ export const POST = withPendingSubmission(async (request: NextRequest, token: st
             to: process.env.ADMIN_EMAIL!,
             subject: 'Nouvelle paroisse ' + data.name,
             html,
-            text: JSON.stringify({...data, token, author: serversession})
+            text: JSON.stringify({ token, ...data, author: serversession})
         })
         if(mailed) {
             result.sent = true

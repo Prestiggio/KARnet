@@ -12,9 +12,10 @@ import { match } from "next/dist/compiled/path-to-regexp";
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '@/lib/umami'
 import OTPLogin, { validateOTP } from '@/actions/login/otp'
-import { session, values } from '@/lib/database'
+import { session, session_delete, values } from '@/lib/database'
 import OTPInput from '@/components/auth/OTPInput'
 import Antibot from '@/components/antibot'
+import { FormProvider, useForm } from '../form-context';
 
 type User = {
     email: string,
@@ -22,11 +23,20 @@ type User = {
     antibot: string
 }
 
-export default function LoginForm() {
+export default function LoginFormWrapper() {
+    return <FormProvider>
+        <LoginForm/>
+    </FormProvider>
+}
+
+function LoginForm() {
     const __ = useTranslations()
     const searchParams = useSearchParams()
     const redirect = searchParams.get("redirect");
     const locale = useLocale()
+    const { formData, setFormData } = useForm('otp-form', {
+        otp: ''
+    })
 
     const [providers, setProviders] = useState<string[]>([
         'google',
@@ -87,7 +97,8 @@ export default function LoginForm() {
     }
 
     const [state, formAction, pending] = useActionState(OTPLogin, {
-        sent: false
+        sent: false,
+        required: []
     })
 
     const validateOTPWithUser = validateOTP.bind(null, user)
@@ -96,7 +107,6 @@ export default function LoginForm() {
         success: false
     })
 
-    const otpValue = useRef('')
     const [showAlternative, setShowAlternative] = useState(false)
 
     useEffect(() => {
@@ -121,6 +131,16 @@ export default function LoginForm() {
         return () => clearTimeout(timer)
     }, [showSpammed])
 
+    useEffect(()=>{
+        if(!state.required?.length) return;
+        grecaptcha.enterprise.execute(process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA!, { action: 'submit' }).then(async (recaptcha_token: any)=>{
+            setUser((u:User)=>({
+                ...u,
+                antibot: recaptcha_token
+            }))
+        });
+    }, [state.required])
+
     useEffect(() => {
         if (allowRetry) return
         if (!showSpammed) return
@@ -133,7 +153,7 @@ export default function LoginForm() {
     useEffect(() => {
         if (state.sent && showSpammed && allowRetry) {
             const timer = setTimeout(() => {
-                if (!otpValue.current) setShowAlternative(true)
+                if (!formData.otp) setShowAlternative(true)
             }, 15000)
             return () => clearTimeout(timer)
         }
@@ -148,8 +168,9 @@ export default function LoginForm() {
             if(pending.subject === 'parish-draft') {
                 parish_creations.push(fetch(`/parishes/create/api`, {
                     method: 'POST',
-                    body: JSON.stringify(pending.content)
+                    body: JSON.stringify({...pending.content, token: item.key})
                 }))
+                parish_creations.push(session_delete(item.key))
             }
         }
         await Promise.all(parish_creations)
@@ -157,6 +178,9 @@ export default function LoginForm() {
     }
 
     useEffect(()=>{
+        setFormData({
+            otp: ''
+        })
         if(otpState.success) {
             void queueSubmissions()
         }
@@ -181,6 +205,9 @@ export default function LoginForm() {
                 <input type='text' onChange={(e) => handleUserChange(e, 'name')} value={user.name} name='fullname' required placeholder={__(`Anarana fiantso`)} className='focus:outline-0 flex-1' />
                 <User2 className='inline-block text-slate-500' />
             </div>
+            <input type="hidden" name="email" value={user.email}/>
+            <input type='hidden' name='locale' value={locale} />
+            <input type='hidden' name='antibot' value={user.antibot} />
             <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
                 {__(`'zay`)}
             </button>
@@ -198,7 +225,7 @@ export default function LoginForm() {
                         {__(`Raha tsy voaray ny mail dia potsero eto averinay alefa`)}
                     </button>}
                 </div>
-                <OTPInput onChange={(v) => { otpValue.current = v }} />
+                <OTPInput/>
                 {allowCall && <div>
                     {__(`Raha tsy mety voaray dia antsoy ny finday 034 96 545 54`)}
                 </div>}
@@ -241,7 +268,6 @@ export default function LoginForm() {
                 <Smartphone className='inline-block text-slate-500' />
             </div>}
         </div>
-        <input type='hidden' name='locale' value={locale} />
         <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
             {__(`'zay`)}
         </button>

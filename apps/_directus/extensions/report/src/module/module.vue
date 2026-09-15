@@ -44,8 +44,7 @@ async function fetchOrganization(date:string|null) {
 		});
 		organization.value = response.data.data ?? {};
 
-		const report = await api.get(`/report/${props.primaryKey}`)
-		console.log('baabidi', report)
+		await api.get(`/report/${props.primaryKey}`)
 	} catch (e) {
 		error.value = "Impossible de charger l'organigramme.";
 	} finally {
