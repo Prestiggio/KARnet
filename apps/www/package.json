@@ -22,7 +22,7 @@
     "@react-email/render": "2.0.6",
     "@sentry/nextjs": "^10.70.0",
     "@types/mdx": "^2.0.14",
-    "better-auth": "^1.7.0",
+    "better-auth": "^1.7.5",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.2.6",
     "dexie": "^4.4.5",
