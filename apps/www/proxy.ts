@@ -8,6 +8,7 @@ const intlMiddleware = createMiddleware(routing);
 
 export const config = {
   matcher: [
+    '/parishes/:id((?!api|join$).+)+',
     '/parishes/create/:token((?!api$).+)+',
     '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
   ]
@@ -20,11 +21,22 @@ const protectedMatchers = config.matcher.slice(0, -1).map(pattern =>
   match(pattern, { decode: decodeURIComponent })
 );
 
+// The proxy receives localized URLs before next-intl rewrites them.
+const localizedProtectedMatchers = Object.entries(routing.pathnames).flatMap(([internalPath, localizedPaths]) => {
+  if (!protectedMatchers.some(matcher => matcher(internalPath) !== false)) return [];
+
+  const paths = typeof localizedPaths === 'string' ? [localizedPaths] : Object.values(localizedPaths);
+  return paths.map(path => match(path.replace(/\[([^\]]+)\]/g, ':$1'), {
+    decode: decodeURIComponent,
+    end: false,
+  }));
+});
+
 const localePrefix = new RegExp(`^/(${routing.locales.join('|')})(?=/|$)`);
 
 function isProtected(pathname: string) {
   const path = pathname.replace(localePrefix, '') || '/';
-  return protectedMatchers.some(matcher => matcher(path) !== false);
+  return [...protectedMatchers, ...localizedProtectedMatchers].some(matcher => matcher(path) !== false);
 }
 
 export async function proxy(request: NextRequest) {

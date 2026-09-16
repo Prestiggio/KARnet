@@ -2,7 +2,7 @@
 
 declare const grecaptcha: { enterprise : { ready: (cb: () => void) => void; execute: (key: string, opts: { action: string }) => Promise<string> }}
 
-import { Mail, Smartphone, User2 } from 'lucide-react'
+import { Mail, Smartphone, User2, CircleX } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
@@ -16,6 +16,8 @@ import { session, session_delete, values } from '@/lib/database'
 import OTPInput from '@/components/auth/OTPInput'
 import Antibot from '@/components/antibot'
 import { FormProvider, useForm } from '../form-context';
+import FacebookSignInButton from './facebook';
+import AppleSignInButton from './apple';
 
 type User = {
     email: string,
@@ -108,6 +110,7 @@ function LoginForm() {
     })
 
     const [showAlternative, setShowAlternative] = useState(false)
+    const [showPopup, setShopPopup] = useState(false)
 
     useEffect(() => {
         if (!state.sent) return
@@ -241,36 +244,54 @@ function LoginForm() {
         </form>
     }
 
-    return <form className='space-y-4' action={formAction}>
-        <div className='text-center'>
-            <Link href={`/`}><Image src={`/logo.webp`} width={1024} height={1024} className="h-12 w-12 mx-auto" alt={__(`Katolika, Eglizy en ligne`)} /></Link>
-        </div>
-        {context === 'parish_create' ? <div className='my-4 text-center text-slate-500 dark:text-slate-100'>
-            <div className='text-lg'>
-                {__(`Voaray ny fangatahanao hampiditra paroasy vaovao.`)}
+    return <>
+        <form className={`space-y-4 ${showPopup && 'transition blur-xs'}`} action={formAction}>
+            <div className='text-center'>
+                <Link href={`/`}><Image src={`/logo.webp`} width={1024} height={1024} className="h-12 w-12 mx-auto" alt={__(`Katolika, Eglizy en ligne`)} /></Link>
             </div>
-            <div className='text-xl font-barlow font-bold'>
-                {__(`Hilazanay ianao rehefa ao fa,`)}
-            </div>
-            <div className='text-lg'>
-                {__(`Apetraho ny contact`)}
-            </div>
-        </div> : <div className='text-lg font-barlow font-bold text-center text-slate-500 my-4'>
-            {__(`Apetraho ny contact ifanomezantsika vaovao`)} :
-        </div>}
-        <div className='md:flex space-x-8 space-y-4 md:space-y-0'>
-            <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-                <input type='email' name='email' required placeholder={__(`Email`)} autoFocus onChange={(e) => handleUserChange(e, 'email')} value={user.email} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
-                <Mail className='inline-block text-slate-500' />
-            </div>
-            {providers.includes('sms') && <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-                <input type='phone' name='phone' required placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
-                <Smartphone className='inline-block text-slate-500' />
+            {context === 'parish_create' ? <div className='my-4 text-center text-slate-500 dark:text-slate-100'>
+                <div className='text-lg'>
+                    {__(`Voaray ny fangatahanao hampiditra paroasy vaovao.`)}
+                </div>
+                <div className='text-xl font-barlow font-bold'>
+                    {__(`Hilazanay ianao rehefa ao fa,`)}
+                </div>
+                <div className='text-lg'>
+                    {__(`Apetraho ny contact`)}
+                </div>
+            </div> : <div className='text-lg font-barlow font-bold text-center text-slate-500 my-4'>
+                {__(`Apetraho ny contact ifanomezantsika vaovao`)} :
             </div>}
+            <div className='md:flex space-x-8 space-y-4 md:space-y-0'>
+                <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
+                    <input type='email' name='email' required placeholder={__(`Email`)} autoFocus onChange={(e) => handleUserChange(e, 'email')} value={user.email} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
+                    <Mail className='inline-block text-slate-500' />
+                </div>
+                {providers.includes('sms') && <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
+                    <input type='phone' name='phone' required placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
+                    <Smartphone className='inline-block text-slate-500' />
+                </div>}
+            </div>
+            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
+                {__(`'zay`)}
+            </button>
+            <Antibot />
+            <hr/>
+            <div className='text-center text-slate-500 dark:text-slate-100'>
+                <button type="button" className='font-semibold hover:underline' onClick={()=>setShopPopup(true)}>{__(`Tsy manana email ve ?`)}</button>
+            </div>
+        </form>
+        <div className={`absolute flex flex-col justify-center items-center top-0 left-0 bg-yellow-800/50 w-screen h-screen ${showPopup ? 'transition opacity-100' : 'transition opacity-0 hidden'}`}>
+            <div className='flex items-start'>
+                <div className='space-y-4 flex flex-col items-center'>
+                    <FacebookSignInButton/>
+                    <GoogleSignIn />
+                    <AppleSignInButton/>
+                </div>
+                <button className='float-right ml-8 cursor-pointer text-slate-600 transition duration-400 hover:text-slate-500' type='button' onClick={()=>setShopPopup(false)}>
+                    <CircleX size={36}/>
+                </button>
+            </div>
         </div>
-        <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
-            {__(`'zay`)}
-        </button>
-        <Antibot />
-    </form>
+    </>
 }

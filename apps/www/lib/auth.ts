@@ -62,10 +62,10 @@ export const auth = betterAuth({
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
     },
-    /*linkedin: {
+    linkedin: {
       clientId: process.env.LINKEDIN_CLIENT_ID as string,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
-    },*/
+    },
     apple: async () => ({
       clientId: process.env.APPLE_CLIENT_ID as string,
       clientSecret: await generateAppleClientSecret(

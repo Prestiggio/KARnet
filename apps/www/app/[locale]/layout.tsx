@@ -8,6 +8,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { LG_COUNTRIES } from "@/lib/utils";
 import Script from 'next/script'
 import IntlErrorHandlingProvider from "@/components/IntlErrorHandlingProvider";
+import { randomBytes } from 'node:crypto';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,11 +87,22 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
+  const signin_state = randomBytes(32).toString('base64url')
+  const signin_nonce = randomBytes(32).toString('base64url')
+
   return (
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} h-full antialiased`}
     >
+      <head>
+        <meta name="appleid-signin-client-id" content="net.katolika.karnet.si"/>
+        <meta name="appleid-signin-scope" content="name email"/>
+        <meta name="appleid-signin-redirect-uri" content="https://dev.katolika.net/api/auth/apple/callback"/>
+        <meta name="appleid-signin-state" content={signin_state}/>
+        <meta name="appleid-signin-nonce" content={signin_nonce}/>
+        <meta name="appleid-signin-use-popup" content="true"/>
+      </head>
       <body className="min-h-full flex flex-col">
         <IntlErrorHandlingProvider locale={locale} messages={messages}>
           {children}

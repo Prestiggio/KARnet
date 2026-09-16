@@ -57,7 +57,7 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
             <h2 className="mb-2 mt-2 md:mt-0 uppercase text-gray-500 dark:text-gray-100 text-xs">{__(`Paroasy matetika zahàna`)} :</h2>
             <motion.ul layout className="md:grid grid-cols-6 gap-4 space-y-4 md:space-y-0 mb-4 md:mb-0">
                 <AnimatePresence mode="popLayout" initial={false}>
-                    <Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: items[0].slug } }} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
+                    <Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]', params: { id: items[0].slug } }} onClick={(event)=>handleClick(event, items[0])} className="relative col-span-2 flex flex-col-reverse md:flex-row hover:shadow-lg transition duration-400">
                         <div className="relative md:absolute w-full bottom-0 grow md:bg-slate-600/80 min-h-20 md:text-white flex flex-col justify-between p-3">
                             <div className="text-xs">{__(`Kristianina_en_ligne`, { n: 3000 })}</div>
                             <div>
@@ -77,7 +77,7 @@ export default function SearchForm({ parishes }: { parishes: any[] }) {
                         transition={{
                             layout: { type: "spring", stiffness: 350, damping: 30 },
                             opacity: { duration: 0.15 },
-                        }}><Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]/login', params: { id: parish.slug } }} onClick={(event)=>handleClick(event, parish)} className="relative h-full cursor-pointer md:bg-slate-600/10 hover:shadow-lg transition duration-400 shadow-sm min-h-30">
+                        }}><Link transitionTypes={['forward']} href={{ pathname: '/parishes/[id]', params: { id: parish.slug } }} onClick={(event)=>handleClick(event, parish)} className="relative h-full cursor-pointer md:bg-slate-600/10 hover:shadow-lg transition duration-400 shadow-sm min-h-30">
                             <div className="bg-slate-500 h-full relative flex flex-col justify-center">
                                 {parish.picture && <Image className="h-full object-cover" src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture.id}`} width={parish.picture.width} height={parish.picture.height} alt={parish.name} />}
                             </div>
