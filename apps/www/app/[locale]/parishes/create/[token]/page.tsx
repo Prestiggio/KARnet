@@ -6,14 +6,19 @@ import { headers } from 'next/headers';
 import { forbidden, notFound } from "next/navigation";
 import ShareButton from "@/components/ui/share-button";
 
-export default async function PendingCreatePage({params}: {params: Promise<{token:string}>}) {
-    const [__, {token}, serversession] = await Promise.all([
+export default async function PendingCreatePage({params}: {params: Promise<{locale:string, token:string}>}) {
+    const [__, {locale, token}, serversession] = await Promise.all([
         getTranslations(),
         params,
         auth.api.getSession({
             headers: await headers()
         })
     ])
+
+    const headersList = await headers();
+    const host = headersList.get('x-forwarded-host') ?? headersList.get('host') ?? 'localhost:3000';
+    const protocol = headersList.get('x-forwarded-proto') ?? (host.includes('localhost') ? 'http' : 'https');
+    const absolutePageUrl = `${protocol}://${host}/${locale}/parishes/create/${token}`;
 
     const [ticket] = await directus.request(readItems('tickets', {
         fields: ['status', 'token', 'content'],
@@ -48,7 +53,7 @@ export default async function PendingCreatePage({params}: {params: Promise<{toke
                 </tbody>
             </table>
             <div className="w-full flex justify-center">
-                <ShareButton title={__(`Ticket`)} text="Zao le texte" url={`http://localhost:3000/fr/parishes/create/NAKdybC-6lQnswfEMcPomWdkFmj6YFRPcRYtiUfMQ2M`}/>
+                <ShareButton title={`katolika.net`} text={`Ticket nanampiana paroasy vaovao ao amin'i katolika.net: ${ticket?.content?.name}`} url={absolutePageUrl} />
             </div>
         </div>
     </div>
