@@ -31,7 +31,7 @@ export const routing = defineRouting({
       fr: '/paroisse/[id]'
     },
     '/parishes/[id]/login': {
-      mg: '/paroasy/[id]/miditra',
+      mg: '/paroasy/[id]/hiditra',
       fr: '/paroisse/[id]/connexion'
     }
   }

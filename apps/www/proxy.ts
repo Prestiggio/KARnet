@@ -34,7 +34,33 @@ const localizedProtectedMatchers = Object.entries(routing.pathnames).flatMap(([i
 
 const localePrefix = new RegExp(`^/(${routing.locales.join('|')})(?=/|$)`);
 
+function parishLoginPath(pathname: string) {
+  const locale = pathname.match(localePrefix)?.[1] ?? routing.defaultLocale;
+  const path = pathname.replace(localePrefix, '') || '/';
+  const parishPaths = routing.pathnames['/parishes/[id]'];
+  const parishPattern = typeof parishPaths === 'string'
+    ? parishPaths
+    : parishPaths[locale as keyof typeof parishPaths] ?? '/parishes/[id]';
+  const parishMatch = match(parishPattern.replace('[id]', ':id'), {
+    decode: decodeURIComponent,
+  })(path);
+
+  if (!parishMatch) return null;
+
+  const loginPaths = routing.pathnames['/parishes/[id]/login'];
+  const loginPattern = typeof loginPaths === 'string'
+    ? loginPaths
+    : loginPaths[locale as keyof typeof loginPaths] ?? '/parishes/[id]/login';
+  const id = encodeURIComponent(String(parishMatch.params.id));
+  return `/${locale}${loginPattern.replace('[id]', id)}`;
+}
+
 function isProtected(pathname: string) {
+  // Parish login pages must remain public. They are children of a protected
+  // parish route, so the broad localized matcher would otherwise redirect
+  // them repeatedly.
+  if (/\/(?:hiditra|connexion|login)\/?$/.test(pathname)) return false;
+
   const path = pathname.replace(localePrefix, '') || '/';
   return [...protectedMatchers, ...localizedProtectedMatchers].some(matcher => matcher(path) !== false);
 }
@@ -62,7 +88,7 @@ export async function proxy(request: NextRequest) {
 
     if (!sessionCookie) {
       const url = request.nextUrl.clone();
-      url.pathname = "/sign-in";
+      url.pathname = parishLoginPath(pathname) ?? '/sign-in';
       url.searchParams.set("redirect", pathname);
       return setProviderCookie(NextResponse.redirect(new URL(url)));
     }

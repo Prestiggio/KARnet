@@ -96,9 +96,9 @@ export default async function LocaleLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} h-full antialiased`}
     >
       <head>
-        <meta name="appleid-signin-client-id" content="net.katolika.karnet.si"/>
+        <meta name="appleid-signin-client-id" content={process.env.APPLE_CLIENT_ID}/>
         <meta name="appleid-signin-scope" content="name email"/>
-        <meta name="appleid-signin-redirect-uri" content="https://dev.katolika.net/api/auth/apple/callback"/>
+        <meta name="appleid-signin-redirect-uri" content={`${process.env.BETTER_AUTH_URL}/api/auth/apple/callback`}/>
         <meta name="appleid-signin-state" content={signin_state}/>
         <meta name="appleid-signin-nonce" content={signin_nonce}/>
         <meta name="appleid-signin-use-popup" content="true"/>
