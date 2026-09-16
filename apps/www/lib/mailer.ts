@@ -19,7 +19,7 @@ export default async function(mail: MailObject) {
         body: JSON.stringify({
             ...mail,
             to: mail.to ?? 'admin@katolika.net',
-            from: mail.from ?? 'admin@katolika.net',
+            from: mail.from ?? 'no-reply@katolika.net',
             fromName: mail.fromName ?? 'KATOLIKA APOSTOLIKA ROMANA NETWORK'
         })
     }))
