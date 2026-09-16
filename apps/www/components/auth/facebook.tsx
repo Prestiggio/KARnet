@@ -1,6 +1,18 @@
 'use client'
 
-declare const FB: { init: (conf: any) => void; login: (cb: (response: any) => void) => void; api: (path: string, fields: any, cb: (response: any) => void) => void }
+declare const FB: {
+    init: (config: {
+        appId?: string;
+        xfbml: boolean;
+        version: string;
+    }) => void;
+}
+
+declare global {
+    interface Window {
+        fbAsyncInit?: () => void;
+    }
+}
 
 import Script from "next/script";
 import { useEffect } from "react"
@@ -17,26 +29,7 @@ export default function FacebookSignInButton() {
         };
     }, [])
 
-    const loginWithFacebook = () => {
-        FB.login(function (response) {
-            if (response.authResponse) {
-                console.log("Welcome!  Fetching your information.... ");
-                // After successful login, we can fetch the user's information
-                FB.api("/me", { fields: "name, email" }, function (response) {
-                    document.getElementById("profile").innerHTML =
-                        "Good to see you, " +
-                        response.name +
-                        ". i see your email address is " +
-                        response.email;
-                });
-            } else {
-                console.log("User cancelled login or did not fully authorize.");
-            }
-        });
-    }
-
     return <div>
-        <p id="profile"></p>
         <div id="spinner">
             <div
             className="fb-login-button"
