@@ -43,7 +43,7 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
     const [error, setError] = useState(false)
     const [selectedDiocese, selectDiocese] = useState<any>({})
     const selectedDiocese_ref = useRef(selectedDiocese)
-    const { handleChange, onValidate } = useForm('parish-draft', {
+    const { handleChange, onValidate, formData } = useForm('parish-draft', {
         diocese: ''
     })
 
@@ -70,6 +70,12 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(()=>{
+        if(formData.diocese) {
+            toggleSelected(formData.diocese)
+        }
+    }, [formData])
 
     return <TransformWrapper minScale={1} maxScale={12} wheel={{ disabled: true }} doubleClick={{ mode: "reset" }}>
         {({ zoomToElement, resetTransform }) => (

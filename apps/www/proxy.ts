@@ -8,8 +8,7 @@ const intlMiddleware = createMiddleware(routing);
 
 export const config = {
   matcher: [
-    '/parishes/:id((?!api|join$).+)+',
-    '/parishes/create/:token((?!api$).+)+',
+    '/parishes/:id((?!api|join|create$).+)+',
     '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
   ]
 };
@@ -56,12 +55,17 @@ function parishLoginPath(pathname: string) {
 }
 
 function isProtected(pathname: string) {
+  const path = pathname.replace(localePrefix, '') || '/';
+
+  // This endpoint accepts anonymous parish drafts. Authentication happens
+  // later, when the user resumes the submission with the returned token.
+  if (/^\/parishes\/create\/api\/?$/.test(path)) return false;
+
   // Parish login pages must remain public. They are children of a protected
   // parish route, so the broad localized matcher would otherwise redirect
   // them repeatedly.
   if (/\/(?:hiditra|connexion|login)\/?$/.test(pathname)) return false;
 
-  const path = pathname.replace(localePrefix, '') || '/';
   return [...protectedMatchers, ...localizedProtectedMatchers].some(matcher => matcher(path) !== false);
 }
 

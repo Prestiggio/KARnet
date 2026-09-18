@@ -18,6 +18,7 @@ import Antibot from '@/components/antibot'
 import { FormProvider, useForm } from '../form-context';
 import FacebookSignInButton from './facebook';
 import AppleSignInButton from './apple';
+import LinkedingSignInButton from './linkedin';
 
 type User = {
     email: string,
@@ -164,6 +165,7 @@ function LoginForm() {
     }, [state.sent, showSpammed, allowRetry])
 
     async function queueSubmissions() {
+        
         const all = await values()
         let parish_creations: Promise<any>[] = []
         for(const item of all) {
@@ -177,7 +179,8 @@ function LoginForm() {
             }
         }
         await Promise.all(parish_creations)
-        document.location.href = redirect ?? '/'
+        
+        
     }
 
     useEffect(()=>{
@@ -185,7 +188,7 @@ function LoginForm() {
             otp: ''
         })
         if(otpState.success) {
-            void queueSubmissions()
+            document.location.href = redirect ?? '/'
         }
     }, [otpState])
 
@@ -287,6 +290,7 @@ function LoginForm() {
                     <FacebookSignInButton/>
                     <GoogleSignIn />
                     <AppleSignInButton/>
+                    <LinkedingSignInButton/>
                 </div>
                 <button className='float-right ml-8 cursor-pointer text-slate-600 transition duration-400 hover:text-slate-500' type='button' onClick={()=>setShopPopup(false)}>
                     <CircleX size={36}/>

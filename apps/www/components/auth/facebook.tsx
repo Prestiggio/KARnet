@@ -1,44 +1,26 @@
 'use client'
 
-declare const FB: {
-    init: (config: {
-        appId?: string;
-        xfbml: boolean;
-        version: string;
-    }) => void;
-}
-
-declare global {
-    interface Window {
-        fbAsyncInit?: () => void;
-    }
-}
-
-import Script from "next/script";
-import { useEffect } from "react"
+import { useTranslations } from "next-intl";
+import { authClient } from "@/lib/auth-client";
+import { useCallback } from "react";
+import { session } from "@/lib/database";
 
 export default function FacebookSignInButton() {
 
-    useEffect(() => {
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID,
-                xfbml: true,
-                version: "v26.0",
-            });
-        };
+    const __ = useTranslations()
+
+    const signIn = useCallback(async()=>{
+        const { redirect } = await session('redirect')
+        authClient.signIn.social({
+            provider: 'facebook',
+            callbackURL: redirect ?? '/'
+        })
     }, [])
 
-    return <div>
-        <div id="spinner">
-            <div
-            className="fb-login-button"
-            data-max-rows="1"
-            data-size="large"
-            data-button-type="continue_with"
-            data-use-continue-as="true"
-            ></div>
+    return <button onClick={signIn} type="button" className="cursor-pointer bg-[#4269B2] text-white text-lg hover:bg-[#5882d0] transition font-semibold w-76 text-center font-barlow rounded-lg shadow px-4 flex justify-center gap-3 items-center">
+        <div>
+            <i className="font-kto text-2xl kto-facebook inline-block pt-2"></i>
         </div>
-        <Script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk.js"/>
-    </div>
+        <div>{__(`Sokafy @ Facebook`)}</div>
+    </button>
 }

@@ -8,18 +8,20 @@ import Antibot from '@/components/antibot'
 import { Link } from '@/i18n/navigation'
 import DiosezyMap from './diosezy'
 import { FormProvider, useForm } from '@/components/form-context'
+import * as Sentry from '@sentry/nextjs'
+import { useCallback, useEffect } from 'react'
 
-export default function ParishForm({ dioceses }: { dioceses: any[] }) {
+export default function ParishForm({ dioceses, token }: { dioceses: any[], token?: string }) {
     return <FormProvider>
-        <ParishFormFields dioceses={dioceses} />
+        <ParishFormFields dioceses={dioceses} token={token} />
     </FormProvider>
 }
 
-function ParishFormFields({ dioceses }: { dioceses: any[] }) {
+function ParishFormFields({ dioceses, token }: { dioceses: any[], token?: any }) {
 
     const formId = 'parish-draft'
 
-    const { formData, handleChange, validate } = useForm(formId, {
+    const { formData, setFormData, handleChange, validate } = useForm(formId, {
         parish: '',
         patron: '',
         diocese: '',
@@ -33,6 +35,21 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
         const value = e.target.value
         handleChange(field, value)
     }
+
+    const prefill = useCallback(async ()=>{
+        if(token) {
+            const data = await session(token)
+            const diocese = JSON.parse(data.content.diocese)
+            setFormData({
+                ...data.content,
+                diocese: diocese.id
+            })
+        }
+    }, [token])
+
+    useEffect(()=>{
+        void prefill()
+    }, [])
 
     async function save(data: any) {
         const [response] = await Promise.all([
@@ -62,7 +79,9 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
             const { token } = await save(data)
             document.location.href = `/parishes/create/${token}`
         }
-        catch (e) {
+        catch (error) {
+            Sentry.captureException(error)
+            await Sentry.flush(2000)
             document.location.href = '/'
         }
     }
@@ -75,7 +94,7 @@ function ParishFormFields({ dioceses }: { dioceses: any[] }) {
             <input required name="name" onChange={handleTextChange} placeholder={__("Anaran'ny paroasy")} type='text' defaultValue={formData.name} className='md:flex-1 focus:outline-2 text-center focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400' />
             <input required name="patron" onChange={handleTextChange} placeholder={__("Olomasina mpiaro")} type='text' defaultValue={formData.patron} className='md:flex-1 focus:outline-2 focus:-outline-offset-2 text-center focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400' />
         </div>
-        <DiosezyMap dioceses={dioceses} />
+        <DiosezyMap dioceses={dioceses}/>
         {false && <input name="district" onChange={handleTextChange} placeholder={__("Distrika")} type='text' defaultValue={formData.district} className='focus:outline-2 focus:-outline-offset-2 text-center focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400' />}
         <button type='submit' className='relative bg-yellow-200 dark:bg-zinc-800 dark:text-white cursor-pointer hover:bg-yellow-200/80 dark:hover:bg-zinc-800/80 transition duration-300 hover:shadow-lg shadow-sm py-2 text-lg/8 font-barlow font-bold text-zinc-600'>{__(`Ampidirina`)} <SquareArrowOutUpRight className='absolute top-3 right-3 w-5' /></button>
         <Antibot />

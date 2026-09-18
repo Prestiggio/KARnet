@@ -1,0 +1,27 @@
+@font-face {
+    font-family: "kto";
+    src: url("./kto.eot?56f7bacdb454d62cf76f3a5bed655469#iefix") format("embedded-opentype"),
+url("./kto.woff2?56f7bacdb454d62cf76f3a5bed655469") format("woff2"),
+url("./kto.woff?56f7bacdb454d62cf76f3a5bed655469") format("woff");
+}
+
+i[class^="kto-"]:before, i[class*=" kto-"]:before {
+    font-family: kto !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.kto-blank:before {
+    content: "\0xA0";
+}
+.kto-linkedin:before {
+    content: "\f101";
+}
+.kto-facebook:before {
+    content: "\f102";
+}

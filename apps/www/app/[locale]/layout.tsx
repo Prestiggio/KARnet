@@ -44,6 +44,13 @@ const Barlow = localFont({
   variable: "--font-barlow",
 });
 
+const KTO = localFont({
+  src: [
+    { path: "../../medias/fonts/kto.woff", weight: "100", style: "normal" },
+  ],
+  variable: "--font-kto",
+});
+
 export async function generateMetadata() {
 
   const [locale, __] = await Promise.all([getLocale(), getTranslations()])
@@ -93,7 +100,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} ${KTO.variable} h-full antialiased`}
     >
       <head>
         <meta name="appleid-signin-client-id" content={process.env.APPLE_CLIENT_ID}/>

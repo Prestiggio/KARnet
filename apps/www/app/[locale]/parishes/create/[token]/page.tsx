@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from 'next/headers';
 import { forbidden, notFound } from "next/navigation";
 import ShareButton from "@/components/ui/share-button";
+import ParishForm from "@/components/parish/form";
 
 export default async function PendingCreatePage({params}: {params: Promise<{locale:string, token:string}>}) {
     const [__, {locale, token}, serversession] = await Promise.all([
@@ -30,12 +31,26 @@ export default async function PendingCreatePage({params}: {params: Promise<{loca
         limit: 1
     }))
 
-    if(!ticket) {
-        notFound()
+    if(ticket && ticket?.content?.author?.user?.id !== serversession?.user.id) {
+        forbidden()
     }
 
-    if(ticket?.content?.author?.user?.id !== serversession?.user.id) {
-        forbidden()
+    if(!ticket) {
+        const dioceses = await directus.request(readItems('organizations', {
+            fields: ['id', 'name'],
+            filter: {
+                type: {
+                    slug: {
+                        _eq: 'diosezy'
+                    }
+                }
+            }
+        }))
+
+        return <div className="flex flex-col justify-center grow items-center">
+            <h2 className="text-xl font-barlow font-semibold">{__(`Tena ito ny paroasy tianao ampidirina ?`)}</h2>
+            <ParishForm dioceses={dioceses} token={token}/>
+        </div>
     }
 
     return <div className="flex flex-col justify-center grow items-center">

@@ -10,6 +10,10 @@ type Entry = {
 const store = new Map<string, Entry>()
 
 export function rateLimit(key: string): { allowed: true } | { allowed: false; retryAfterMs: number } {
+    if(process.env.NODE_ENV === 'development') {
+        return { allowed: true }
+    }
+
     const now = Date.now()
     const entry = store.get(key) ?? { timestamps: [] }
 
