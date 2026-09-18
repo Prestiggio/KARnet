@@ -104,7 +104,7 @@ export default function DiosezyMap({dioceses}: {dioceses: any[]}) {
                     <input type="hidden" name="diocese" value={JSON.stringify(selectedDiocese)}/>
                 </div>
                 <div className="hidden md:block md:w-1/2">
-                    {dioceses.map((r, i) => (<button onMouseOver={()=>setHovered(r.id)} className={`shadow transition duration-400 text-sm px-4 m-2 ${hovered == r.id ? 'bg-yellow-200':(selected == r.id ? 'bg-yellow-300' : null)}`} key={`btn-${r.id}-${i}`} type="button" onClick={() => {
+                    {dioceses.map((r, i) => (<button onMouseOver={()=>setHovered(r.id)} className={`shadow cursor-pointer transition duration-400 text-sm px-4 m-2 ${hovered == r.id ? 'bg-yellow-200 dark:bg-zinc-600':(selected == r.id ? 'bg-yellow-300 dark:bg-zinc-500' : null)}`} key={`btn-${r.id}-${i}`} type="button" onClick={() => {
                         selected == r.id ? resetTransform() : zoomToElement(r.id, undefined, 500)
                         toggleSelected(sel=>sel==r.id?'':r.id)
                     }}>{r.name}</button>))}

@@ -44,7 +44,7 @@ async function fetchOrganization(date:string|null) {
 		});
 		organization.value = response.data.data ?? {};
 
-		await api.get(`/report/${props.primaryKey}`)
+		await api.get(`/report/organizations/${props.primaryKey}`)
 	} catch (e) {
 		error.value = "Impossible de charger l'organigramme.";
 	} finally {

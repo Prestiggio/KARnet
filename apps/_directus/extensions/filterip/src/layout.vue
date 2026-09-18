@@ -148,7 +148,7 @@ export default {
 
     function onReportClick(item) {
       const pk = item[primaryKeyFieldName.value];
-      router.push(`/report/${encodeURIComponent(pk)}`);
+      router.push(`/report/organizations/${encodeURIComponent(pk)}`);
     }
 
     function toggleSelectAll() {

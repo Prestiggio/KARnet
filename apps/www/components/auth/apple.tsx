@@ -1,16 +1,26 @@
 'use client'
 
-import { LG_COUNTRIES } from "@/lib/utils"
-import { useLocale } from "next-intl"
-import Script from "next/script"
+import { authClient } from "@/lib/auth-client"
+import { session } from "@/lib/database"
+import { useTranslations } from "next-intl"
+import { useCallback } from "react"
 
 export default function AppleSignInButton() {
 
-    const locale = useLocale() as 'fr'|'en'|'mg'
-    let locale_t = locale === 'mg' ? 'fr' : locale
+    const __ = useTranslations()
 
-    return <>
-        <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in" className="h-12"></div>
-        <Script src={`https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/${LG_COUNTRIES[locale_t]}/appleid.auth.js`}/>
-    </>
+    const signIn = useCallback(async()=>{
+        const { redirect } = await session('redirect')
+        authClient.signIn.social({
+            provider: 'apple',
+            callbackURL: redirect ?? '/'
+        })
+    }, [])
+
+    return <button onClick={signIn} type="button" className="cursor-pointer bg-black text-white hover:bg-gray-900 transition font-semibold w-76 text-center font-sfpro rounded-lg shadow px-4 flex justify-center gap-3 items-center">
+        <div>
+            <i className="font-kto kto-apple inline-block"></i>
+        </div>
+        <div>{__(`Sokafy @ Apple`)}</div>
+    </button>
 }

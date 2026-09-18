@@ -214,7 +214,7 @@ function LoginForm() {
             <input type="hidden" name="email" value={user.email}/>
             <input type='hidden' name='locale' value={locale} />
             <input type='hidden' name='antibot' value={user.antibot} />
-            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
+            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 dark:hover:bg-slate-600 transition duration-400 disabled:bg-gray-200'>
                 {__(`'zay`)}
             </button>
         </form>
@@ -222,7 +222,7 @@ function LoginForm() {
     else if (state.sent) {
         return <form action={otpFormAction}>
             <div className="text-center space-y-4 text-slate-600 dark:text-slate-100">
-                <div className="text-lg text-slate-800">
+                <div className="text-lg text-slate-800 dark:text-slate-200">
                     {__(`Nalefanay mail any amin'i ${user.email} ny code`)}
                 </div>
                 <div>
@@ -236,11 +236,14 @@ function LoginForm() {
                     {__(`Raha tsy mety voaray dia antsoy ny finday 034 96 545 54`)}
                 </div>}
                 {otpSubmitted.current && !otpPending && !otpState.success && <div className="text-red-500 text-sm">{__(`Diso ilay kaody nampidirinao`)}</div>}
-                <button onClick={() => { otpSubmitted.current = true }} disabled={otpPending} className="mt-12 capitalize bg-slate-600 hover:bg-slate-500 transition duration-400 cursor-pointer dark:bg-zinc-100 font-semibold font-barlow text-lg dark:text-slate-600 text-white w-full py-3 shadow-lg disabled:opacity-50">{__(`'zay`)}</button>
+                <button onClick={() => { otpSubmitted.current = true }} disabled={otpPending} className="mt-12 capitalize bg-slate-600 hover:bg-slate-500 transition duration-400 cursor-pointer dark:bg-zinc-600 font-semibold font-barlow text-lg dark:text-slate-200 text-white w-full py-3 shadow-lg disabled:opacity-50">{__(`'zay`)}</button>
                 {providers.includes('google') && showAlternative && <div className='border-t-1 dark:border-slate-500 pt-4 space-y-4 mt-6'>
                     <div className='font-semibold text-slate-700 text-center'>{__(`Fomba hafa`)} :</div>
-                    {providers.includes('google') && <div className='flex justify-center'>
+                    {providers.includes('google') && <div className='flex justify-center gap-4'>
+                        <FacebookSignInButton/>
                         <GoogleSignIn />
+                        <AppleSignInButton/>
+                        <LinkedingSignInButton/>
                     </div>}
                 </div>}
             </div>
@@ -275,7 +278,7 @@ function LoginForm() {
                     <Smartphone className='inline-block text-slate-500' />
                 </div>}
             </div>
-            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 transition duration-400 disabled:bg-gray-200'>
+            <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 dark:hover:bg-slate-500 transition duration-400 disabled:bg-gray-200'>
                 {__(`'zay`)}
             </button>
             <Antibot />
@@ -292,7 +295,7 @@ function LoginForm() {
                     <AppleSignInButton/>
                     <LinkedingSignInButton/>
                 </div>
-                <button className='float-right ml-8 cursor-pointer text-slate-600 transition duration-400 hover:text-slate-500' type='button' onClick={()=>setShopPopup(false)}>
+                <button className='float-right ml-8 cursor-pointer text-slate-600 dark:text-slate-300 transition duration-400 hover:text-slate-500' type='button' onClick={()=>setShopPopup(false)}>
                     <CircleX size={36}/>
                 </button>
             </div>

@@ -51,6 +51,21 @@ const KTO = localFont({
   variable: "--font-kto",
 });
 
+const SFPro = localFont({
+  src: [
+    { path: "../../medias/fonts/SF-Pro-Rounded-Thin.otf", weight: "100", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Ultralight.otf", weight: "200", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Light.otf", weight: "300", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Regular.otf", weight: "400", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Medium.otf", weight: "500", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Semibold.otf", weight: "600", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Heavy.otf", weight: "700", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Bold.otf", weight: "800", style: "normal" },
+    { path: "../../medias/fonts/SF-Pro-Rounded-Black.otf", weight: "900", style: "normal" },
+  ],
+  variable: "--font-sfpro",
+});
+
 export async function generateMetadata() {
 
   const [locale, __] = await Promise.all([getLocale(), getTranslations()])
@@ -100,7 +115,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} ${KTO.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${Barlow.variable} ${KTO.variable} ${SFPro.variable} h-full antialiased`}
     >
       <head>
         <meta name="appleid-signin-client-id" content={process.env.APPLE_CLIENT_ID}/>

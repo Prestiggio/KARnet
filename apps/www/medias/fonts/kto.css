@@ -1,8 +1,8 @@
 @font-face {
     font-family: "kto";
-    src: url("./kto.eot?56f7bacdb454d62cf76f3a5bed655469#iefix") format("embedded-opentype"),
-url("./kto.woff2?56f7bacdb454d62cf76f3a5bed655469") format("woff2"),
-url("./kto.woff?56f7bacdb454d62cf76f3a5bed655469") format("woff");
+    src: url("./kto.eot?1e9aab5b50231dd9854cb65da92d5d0c#iefix") format("embedded-opentype"),
+url("./kto.woff2?1e9aab5b50231dd9854cb65da92d5d0c") format("woff2"),
+url("./kto.woff?1e9aab5b50231dd9854cb65da92d5d0c") format("woff");
 }
 
 i[class^="kto-"]:before, i[class*=" kto-"]:before {
@@ -24,4 +24,7 @@ i[class^="kto-"]:before, i[class*=" kto-"]:before {
 }
 .kto-facebook:before {
     content: "\f102";
+}
+.kto-apple:before {
+    content: "\f103";
 }

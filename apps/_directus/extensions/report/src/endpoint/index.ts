@@ -1,5 +1,16 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 
+type TicketRow = {
+  id: string;
+  content: {
+    author: {
+      user: {
+        id: string;
+      };
+    };
+  };
+};
+
 // Agrégats du rapport pastoral pour une organisation, sur les axes décrits
 // dans docs/mass-tracking-database-schema.md §10. Les collections sources
 // (celebrations, observations, rehearsals, group_meetings, ...) n'existent
@@ -9,7 +20,13 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 export default defineEndpoint({
 	id: 'report',
 	handler: (router, { database }) => {
-		router.get('/:primaryKey', async (req, res) => {
+		router.get('/tickets/:userId', async (req, res) => {
+			const userId = req.params.userId;
+			const tickets = await database('tickets').select(['id', 'content', 'status', 'subject']).whereRaw(`?? #>> '{author,user,id}' = ?`, ['content', userId])
+			return res.status(200).json(tickets);
+		});
+
+		router.get('/organizations/:primaryKey', async (req, res) => {
 			const accountability = (req as any).accountability;
 			if (!accountability?.user) {
 				return res.status(401).json({ error: 'Unauthorized' });
@@ -45,7 +62,7 @@ export default defineEndpoint({
 			});
 		});
 
-		router.post('/:primaryKey', async (req, res) => {
+		router.post('/organizations/:primaryKey', async (req, res) => {
 			const accountability = (req as any).accountability;
 			if (!accountability?.user) {
 				return res.status(401).json({ error: 'Unauthorized' });

@@ -41,7 +41,7 @@ export default function ShareButton({ title, text, url }: ShareButtonProps) {
         <button
             onClick={handleShare}
             type="button"
-            className="mt-6 px-4 py-2 min-w-60 cursor-pointer bg-slate-700 text-white rounded hover:bg-slate-600 transition"
+            className="mt-6 px-4 py-2 min-w-60 cursor-pointer bg-slate-700 dark:bg-slate-600 text-white dark:text-zinc-100 rounded hover:bg-slate-600 transition"
         >
             {__(`Tadidìna`)} <Bookmark className="inline float-right"/>
         </button>

@@ -22,7 +22,7 @@ export default async function PendingCreatePage({params}: {params: Promise<{loca
     const absolutePageUrl = `${protocol}://${host}/${locale}/parishes/create/${token}`;
 
     const [ticket] = await directus.request(readItems('tickets', {
-        fields: ['status', 'token', 'content'],
+        fields: ['status', 'token', 'subject', 'content'],
         filter: {
             token: {
                 _eq: token
@@ -54,15 +54,25 @@ export default async function PendingCreatePage({params}: {params: Promise<{loca
     }
 
     return <div className="flex flex-col justify-center grow items-center">
-        <div className="text-slate-600 md:min-w-3xl">
+        <div className="text-slate-600 dark:text-slate-200 md:min-w-3xl">
             <table className="w-full">
-                <tbody className="divide-y">
+                <tbody>
+                    {ticket.subject == 'parish-draft' && <>
+                        <tr className="divide-x">
+                            <th className="p-3 capitalize text-gray-400">{__(`Antony`)}</th>
+                            <td className="p-3">{__(`Hampiditra paroasy vaovao`)}</td>
+                        </tr>
+                        <tr className="divide-x">
+                            <th className="text-gray-400"></th>
+                            <td className="p-3 capitalize">{ticket.content.name}</td>
+                        </tr>
+                        <tr className="divide-x">
+                            <th className="text-gray-400"></th>
+                            <td className="p-3 capitalize">{JSON.parse(ticket.content.diocese).name}</td>
+                        </tr>
+                    </>}
                     <tr className="divide-x">
-                        <th className="p-3">{__(`Ticket Nº`)}</th>
-                        <td className="p-3"><p className="text-nowrap overflow-hidden text-ellipsis max-w-60">{ticket?.token}</p></td>
-                    </tr>
-                    <tr className="divide-x">
-                        <th className="p-3 capitalize">{__(`status`)}</th>
+                        <th className="p-3 capitalize text-gray-400">{__(`status`)}</th>
                         <td className="p-3 capitalize">{__(ticket?.status)}</td>
                     </tr>
                 </tbody>
