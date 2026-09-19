@@ -8,6 +8,7 @@ import { Link } from '@/i18n/navigation'
 import { ViewTransition } from "react";
 import moment from 'moment'
 import LoginForm from "@/components/auth/login";
+import { withoutAuth } from "@/lib/withoutAuth";
 
 moment.locale('mg', MGMoment)
 
@@ -75,7 +76,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     };
 }
 
-export default async function LoginPage({ params }: { params: Promise<{ id: string }> }) {
+export default withoutAuth(async function LoginPage({ params }: { params: Promise<{ id: string }> }) {
     const [{ id }, __] = await Promise.all([
         params,
         getTranslations()
@@ -141,4 +142,4 @@ export default async function LoginPage({ params }: { params: Promise<{ id: stri
             </div>
         </ViewTransition>
     </div>
-}
+})

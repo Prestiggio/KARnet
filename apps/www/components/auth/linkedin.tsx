@@ -16,7 +16,7 @@ export default function LinkedingSignInButton() {
         })
     }, [])
 
-    return <button onClick={signIn} className="cursor-pointer bg-white hover:bg-sky-50 transition font-semibold w-76 text-center font-barlow rounded-lg shadow text-[#0077B5] flex justify-center gap-3 items-center" type="button">
+    return <button onClick={signIn} className="cursor-pointer min-h-10 bg-white hover:bg-sky-50 transition font-semibold w-76 text-center font-barlow rounded-lg shadow text-[#0077B5] flex justify-center gap-3 items-center" type="button">
         <div>
             <i className="font-kto kto-linkedin float-left ml-4"></i>
         </div>

@@ -33,6 +33,7 @@ export const routing = defineRouting({
     '/parishes/[id]/login': {
       mg: '/paroasy/[id]/hiditra',
       fr: '/paroisse/[id]/connexion'
-    }
+    },
+    '/account/tickets': {}
   }
 });

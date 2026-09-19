@@ -8,6 +8,7 @@ const intlMiddleware = createMiddleware(routing);
 
 export const config = {
   matcher: [
+    '/tickets',
     '/parishes/:id((?!api|join|create$).+)+',
     '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
   ]

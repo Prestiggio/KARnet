@@ -7,6 +7,10 @@ import Image from "next/image";
 import { Link } from '@/i18n/navigation'
 import { ViewTransition } from "react";
 import moment from 'moment'
+import { FirstVisitPopup } from "@/components/parish/first-visit";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { getParishType } from "@/lib/entities/user";
 
 moment.locale('mg', MGMoment)
 
@@ -75,72 +79,85 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const [{ id }, __] = await Promise.all([
+    const [{ id }, __, serversession] = await Promise.all([
         params,
-        getTranslations()
+        getTranslations(),
+        auth.api.getSession({
+            headers: await headers()
+        })
     ])
     const [parish] = await Promise.all([
         getParish(id)
     ])
+    const parish_type = await getParishType(serversession?.user, parish.id)
     const ancestors = getAncestors(parish)
     const diocese = ancestors.find(it => it.type?.slug === 'diosezy')
-    const [[place,], [pastor,], vicars] = await Promise.all([
-        getPlaces(parish.id),
-        getAssigned('Pastor', parish.id),
-        getAssigned('Parochial Vicar', parish.id)
-    ])
+    let place, pastor, vicars: any[] = [];
+    if(parish_type === 'visit') {
+        place = await getPlaces(parish.id)
+    }
+    else if(parish_type === 'attach') {
+        [[pastor,], vicars] = await Promise.all([
+            getAssigned('Pastor', parish.id),
+            getAssigned('Parochial Vicar', parish.id)
+        ])
+    }
+    
 
-    return <div className="grow flex flex-col">
-        <header className="px-5 py-3 border-b border-1 border-zinc-200">
-            <Link href={`/`} transitionTypes={['back']} className="font-barlow flex items-center gap-3">
-                <Image src={`/logo.webp`} width={480} height={480} alt={__(`Katolika, Eglizy en ligne`)} className="w-7 h-7" />
-                KATOLIKA
-            </Link>
-        </header>
-        <ViewTransition name="login"
-            enter={{ forward: "forward", back: "back", default: "auto" }}
-            exit={{ forward: "forward", back: "back", default: "auto" }}
-            share={{ forward: "forward", back: "back", default: "auto" }}>
-            <div className="flex flex-col md:flex-row grow divide-x divide-zinc-200">
-                <div className="md:w-3/12 p-6">
-                    <Image src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture?.id}`} width={parish.picture?.width} height={parish.picture?.height} alt={parish.name} className="h-full object-cover" />
+    return <>
+        <div className="grow flex flex-col">
+            <header className="px-5 py-3 border-b border-1 border-zinc-200">
+                <Link href={`/`} transitionTypes={['back']} className="font-barlow flex items-center gap-3">
+                    <Image src={`/logo.webp`} width={480} height={480} alt={__(`Katolika, Eglizy en ligne`)} className="w-7 h-7" />
+                    KATOLIKA
+                </Link>
+            </header>
+            <ViewTransition name="login"
+                enter={{ forward: "forward", back: "back", default: "auto" }}
+                exit={{ forward: "forward", back: "back", default: "auto" }}
+                share={{ forward: "forward", back: "back", default: "auto" }}>
+                <div className="flex flex-col md:flex-row grow divide-x divide-zinc-200">
+                    <div className="md:w-3/12 p-6">
+                        <Image src={`${process.env.NEXT_PUBLIC_CDN_HOST}/assets/${parish.picture?.id}`} width={parish.picture?.width} height={parish.picture?.height} alt={parish.name} className="h-full object-cover" />
+                    </div>
+                    <div className="md:w-6/12 p-6">
+                        <span className="uppercase text-zinc-500 font-barlow tracking-widest">{diocese?.name}</span>
+                        <div className="text-4xl md:text-5xl font-barlow font-[400]">
+                            {parish.name}
+                        </div>
+                        <div className="pt-3 text-sm text-zinc-500">
+                            Tsy mbola misy vaovao voaray
+                        </div>
+                        <div className="min-h-50 prose dark:prose-invert my-8 max-w-none">
+                            
+                        </div>
+                    </div>
+                    <div className="md:w-3/12 p-6">
+                        {place?.coords && <GoogleMap place={place} />}
+                        <div className="border border-dashed border-zinc-200 border-1 my-4 p-4">
+                            <table className="w-full border-collapse border-spacing-[10px]">
+                                <tbody>
+                                    {pastor && <tr>
+                                        <td className="text-nowrap align-top text-right text-zinc-500">{__(`Curé`)} : </td>
+                                        <td>
+                                            <div className="font-bold">{pastor?.title} {pastor?.assigned?.lastname} {pastor?.assigned?.firstname}</div>
+                                            <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(pastor?.start_at).format('Y')}</div>
+                                        </td>
+                                    </tr>}
+                                    {vicars.map((vicar: any) => <tr key={vicar.id}>
+                                        <td className="text-nowrap align-top text-right text-zinc-500">{__(`Vicaire`)} : </td>
+                                        <td>
+                                            <div className="font-bold">{vicar?.title} {vicar?.assigned?.lastname} {vicar?.assigned?.firstname}</div>
+                                            <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(vicar?.start_at).format('Y')}</div>
+                                        </td>
+                                    </tr>)}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div className="md:w-6/12 p-6">
-                    <span className="uppercase text-zinc-500 font-barlow tracking-widest">{diocese?.name}</span>
-                    <div className="text-4xl md:text-5xl font-barlow font-[400]">
-                        {parish.name}
-                    </div>
-                    <div className="pt-3 text-sm text-zinc-500">
-                        Tsy mbola misy vaovao voaray
-                    </div>
-                    <div className="min-h-50 prose dark:prose-invert my-8 max-w-none">
-                        
-                    </div>
-                </div>
-                <div className="md:w-3/12 p-6">
-                    {place?.coords && <GoogleMap place={place} />}
-                    <div className="border border-dashed border-zinc-200 border-1 my-4 p-4">
-                        <table className="w-full border-collapse border-spacing-[10px]">
-                            <tbody>
-                                {pastor && <tr>
-                                    <td className="text-nowrap align-top text-right text-zinc-500">{__(`Curé`)} : </td>
-                                    <td>
-                                        <div className="font-bold">{pastor?.title} {pastor?.assigned?.lastname} {pastor?.assigned?.firstname}</div>
-                                        <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(pastor?.start_at).format('Y')}</div>
-                                    </td>
-                                </tr>}
-                                {vicars.map((vicar: any) => <tr key={vicar.id}>
-                                    <td className="text-nowrap align-top text-right text-zinc-500">{__(`Vicaire`)} : </td>
-                                    <td>
-                                        <div className="font-bold">{vicar?.title} {vicar?.assigned?.lastname} {vicar?.assigned?.firstname}</div>
-                                        <div className="text-xs italic">{__(`Hatramin'ny`)} {moment(vicar?.start_at).format('Y')}</div>
-                                    </td>
-                                </tr>)}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </ViewTransition>
-    </div>
+            </ViewTransition>
+            <FirstVisitPopup id={parish.id}/>
+        </div>
+    </>
 }

@@ -17,7 +17,7 @@ export default function AppleSignInButton() {
         })
     }, [])
 
-    return <button onClick={signIn} type="button" className="cursor-pointer bg-black text-white hover:bg-gray-900 transition font-semibold w-76 text-center font-sfpro rounded-lg shadow px-4 flex justify-center gap-3 items-center">
+    return <button onClick={signIn} type="button" className="cursor-pointer min-h-10 bg-black text-white hover:bg-gray-900 transition font-semibold w-76 text-center font-sfpro rounded-lg shadow px-4 flex justify-center gap-3 items-center">
         <div>
             <i className="font-kto kto-apple inline-block"></i>
         </div>

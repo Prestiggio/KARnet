@@ -53,7 +53,7 @@ export default async function PendingCreatePage({params}: {params: Promise<{loca
         </div>
     }
 
-    return <div className="flex flex-col justify-center grow items-center">
+    return <div className="flex flex-col mt-18 md:mt-0 md:justify-center grow items-center">
         <div className="text-slate-600 dark:text-slate-200 md:min-w-3xl">
             <table className="w-full">
                 <tbody>

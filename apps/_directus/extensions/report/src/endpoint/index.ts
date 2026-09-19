@@ -22,7 +22,7 @@ export default defineEndpoint({
 	handler: (router, { database }) => {
 		router.get('/tickets/:userId', async (req, res) => {
 			const userId = req.params.userId;
-			const tickets = await database('tickets').select(['id', 'content', 'status', 'subject']).whereRaw(`?? #>> '{author,user,id}' = ?`, ['content', userId])
+			const tickets = await database('tickets').select(['id', 'content', 'status', 'token', 'subject']).whereRaw(`?? #>> '{author,user,id}' = ?`, ['content', userId])
 			return res.status(200).json(tickets);
 		});
 

@@ -19,6 +19,7 @@ import { FormProvider, useForm } from '../form-context';
 import FacebookSignInButton from './facebook';
 import AppleSignInButton from './apple';
 import LinkedingSignInButton from './linkedin';
+import SocialLogin from './social';
 
 type User = {
     email: string,
@@ -40,11 +41,6 @@ function LoginForm() {
     const { formData, setFormData } = useForm('otp-form', {
         otp: ''
     })
-
-    const [providers, setProviders] = useState<string[]>([
-        'google',
-        //'sms'
-    ])
     const [user, setUser] = useState<User>({
         email: '',
         name: '',
@@ -237,14 +233,11 @@ function LoginForm() {
                 </div>}
                 {otpSubmitted.current && !otpPending && !otpState.success && <div className="text-red-500 text-sm">{__(`Diso ilay kaody nampidirinao`)}</div>}
                 <button onClick={() => { otpSubmitted.current = true }} disabled={otpPending} className="mt-12 capitalize bg-slate-600 hover:bg-slate-500 transition duration-400 cursor-pointer dark:bg-zinc-600 font-semibold font-barlow text-lg dark:text-slate-200 text-white w-full py-3 shadow-lg disabled:opacity-50">{__(`'zay`)}</button>
-                {providers.includes('google') && showAlternative && <div className='border-t-1 dark:border-slate-500 pt-4 space-y-4 mt-6'>
+                {showAlternative && <div className='border-t-1 dark:border-slate-500 pt-4 space-y-4 mt-6'>
                     <div className='font-semibold text-slate-700 text-center'>{__(`Fomba hafa`)} :</div>
-                    {providers.includes('google') && <div className='flex justify-center gap-4'>
-                        <FacebookSignInButton/>
-                        <GoogleSignIn />
-                        <AppleSignInButton/>
-                        <LinkedingSignInButton/>
-                    </div>}
+                    <div className='flex justify-center gap-4'>
+                        <SocialLogin/>
+                    </div>
                 </div>}
             </div>
         </form>
@@ -273,10 +266,6 @@ function LoginForm() {
                     <input type='email' name='email' required placeholder={__(`Email`)} autoFocus onChange={(e) => handleUserChange(e, 'email')} value={user.email} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
                     <Mail className='inline-block text-slate-500' />
                 </div>
-                {providers.includes('sms') && <div className='flex flex-1 focus:outline-2 focus:-outline-offset-2 focus:outline-slate-600 dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-slate-500 shadow-sm w-full bg-slate-300/10 py-2 px-4 hover:shadow-lg transition duration-400'>
-                    <input type='phone' name='phone' required placeholder={__(`Laharan'ny finday`)} className='focus:outline-0 flex-1' onInvalid={handleInvalid} onBlur={handleFieldAbandon} />
-                    <Smartphone className='inline-block text-slate-500' />
-                </div>}
             </div>
             <button type='submit' onClick={handleSubmitClick} disabled={pending} className='relative capitalize font-barlow text-lg font-semibold text-center w-full dark:bg-slate-200/30 py-2 bg-yellow-200 shadow-lg cursor-pointer hover:bg-yellow-100 dark:hover:bg-slate-500 transition duration-400 disabled:bg-gray-200'>
                 {__(`'zay`)}
@@ -290,10 +279,7 @@ function LoginForm() {
         <div className={`absolute flex flex-col justify-center items-center top-0 left-0 bg-yellow-800/50 w-screen h-screen ${showPopup ? 'transition opacity-100' : 'transition opacity-0 hidden'}`}>
             <div className='flex items-start'>
                 <div className='space-y-4 flex flex-col items-center'>
-                    <FacebookSignInButton/>
-                    <GoogleSignIn />
-                    <AppleSignInButton/>
-                    <LinkedingSignInButton/>
+                    <SocialLogin/>
                 </div>
                 <button className='float-right ml-8 cursor-pointer text-slate-600 dark:text-slate-300 transition duration-400 hover:text-slate-500' type='button' onClick={()=>setShopPopup(false)}>
                     <CircleX size={36}/>

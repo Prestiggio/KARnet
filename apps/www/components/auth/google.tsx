@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
 import { session } from "@/lib/database";
 
-export default function SignInButton() {
+export default function GoogleSignInButton() {
     const buttonRef = useRef<HTMLDivElement>(null);
 
     const setup = useCallback(async()=>{
